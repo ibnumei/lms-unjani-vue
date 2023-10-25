@@ -7648,7 +7648,7 @@ i.large-icon {
 
 body {
   min-height: calc(100% - 150px);
-  position: relative;
+  position: inherit;
   padding-bottom: 90px;
 
   @include respond-below(xl) {

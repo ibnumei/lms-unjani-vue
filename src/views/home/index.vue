@@ -1,97 +1,36 @@
 <template>
-  <home-layout>
-    <!-- <div :class="{ 'landing-page': true, 'show-mobile-menu': showMobileMenu }"> -->
-    <div>
-      <div class="main-container">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-              <img
-                src="../../assets/logos/logo.svg"
-                height="60"
-                class="d-inline-block align-text-top"
-              />
-            </a>
-          </div>
-        </nav>
+  <div>
+    <home-layout>
+      <div class="landing-page">
+        <div class="main-container">
+          <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">
+                <img
+                  src="../../assets/logos/logo.svg"
+                  height="60"
+                  class="d-inline-block align-text-top"
+                />
+              </a>
+            </div>
+          </nav>
 
-        <div class="content-container" id="home">
-          <div class="section home" id="sectionHome">
-            <div class="container">
-              <div class="row" id="homeRow">
-                <b-colxx xxs="12" class="pl-0 pr-0 mt-4">
-                  <glide-component :settings="glideBannerOption">
-                    <div
-                      class="pr-3 pl-2 mb-4 glide__slide"
-                      v-for="(f, index) in bannerContent"
-                      :key="`bannerContent_${index}`"
-                    >
-                      <b-card class="flex-row" no-body>
-                        <div class="w-100 position-relative">
-                          <img
-                            class="card-img"
-                            style="max-height: 400px"
-                            :src="f.imgSrc"
-                            alt="Card cap"
-                          />
-                        </div>
-                      </b-card>
-                    </div>
-                  </glide-component>
-                </b-colxx>
-              </div>
-
-              <div class="row">
-                <div class="col-12 p-0">
-                  <div class="home-carousel">
-                    <b-input-group class="mb-3">
-                      <b-form-input class="custom-rounded" />
-                      <b-input-group-append>
-                        <b-button variant="outline-white">Cari Buku</b-button>
-                      </b-input-group-append>
-                    </b-input-group>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row mb-4">
-                <b-colxx lg="6" class="home-carousel pr-4 pl-3">
-                  <div class="card row">
-                    <div class="card-body text-center">
-                      <div>
-                        <i class="iconsminds-inbox-into large-icon"></i>
-                        <h5 class="mb-3 font-weight-semibold">Pengembalian</h5>
-                      </div>
-                    </div>
-                  </div>
-                </b-colxx>
-                <b-colxx lg="6" class="home-carousel pl-4 pr-3">
-                  <div class="card row">
-                    <div class="card-body text-center">
-                      <div>
-                        <i class="iconsminds-inbox-out large-icon"></i>
-                        <h5 class="mb-3 font-weight-semibold">Peminjaman</h5>
-                      </div>
-                    </div>
-                  </div>
-                </b-colxx>
-              </div>
-
-              <div class="row">
-                <div class="card col-12 p-0">
-                  <h2 class="text-dark mt-2">Daftar Buku Terbaru</h2>
-                  <div class="home-carousel">
-                    <glide-component :settings="glideBookOption">
+          <div class="content-container" id="home">
+            <div class="section home" id="sectionHome">
+              <div class="container">
+                <div class="row" id="homeRow">
+                  <b-colxx xxs="12" class="pl-0 pr-0 mt-4">
+                    <glide-component :settings="glideBannerOption">
                       <div
-                        class="card"
-                        v-for="(f, index) in bookContent"
-                        :key="`bookContent_${index}`"
+                        class="pr-3 pl-2 mb-4 glide__slide"
+                        v-for="(f, index) in bannerContent"
+                        :key="`bannerContent_${index}`"
                       >
                         <b-card class="flex-row" no-body>
                           <div class="w-100 position-relative">
                             <img
                               class="card-img"
-                              style="max-height: 210px"
+                              style="max-height: 400px"
                               :src="f.imgSrc"
                               alt="Card cap"
                             />
@@ -99,13 +38,77 @@
                         </b-card>
                       </div>
                     </glide-component>
+                  </b-colxx>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 p-0">
+                    <div class="home-carousel">
+                      <b-input-group class="mb-3">
+                        <b-form-input class="custom-rounded" />
+                        <b-input-group-append>
+                          <b-button variant="outline-white">Cari Buku</b-button>
+                        </b-input-group-append>
+                      </b-input-group>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-4">
+                  <b-colxx lg="6" class="home-carousel pr-4 pl-3">
+                    <div class="card row">
+                      <div class="card-body text-center">
+                        <div>
+                          <i class="iconsminds-inbox-into large-icon"></i>
+                          <h5 class="mb-3 font-weight-semibold">
+                            Pengembalian
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </b-colxx>
+                  <b-colxx lg="6" class="home-carousel pl-4 pr-3">
+                    <div class="card row">
+                      <div class="card-body text-center">
+                        <div>
+                          <i class="iconsminds-inbox-out large-icon"></i>
+                          <h5 class="mb-3 font-weight-semibold">Peminjaman</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </b-colxx>
+                </div>
+
+                <div class="row">
+                  <div class="card col-12 p-0">
+                    <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
+                    <hr/>
+                    <div class="home-carousel">
+                      <glide-component :settings="glideBookOption">
+                        <div
+                          class="card"
+                          v-for="(f, index) in bookContent"
+                          :key="`bookContent_${index}`"
+                        >
+                          <b-card class="flex-row" no-body>
+                            <div class="w-100 position-relative">
+                              <img
+                                class="card-img"
+                                style="max-height: 210px"
+                                :src="f.imgSrc"
+                                alt="Card cap"
+                              />
+                            </div>
+                          </b-card>
+                        </div>
+                      </glide-component>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="section footer mb-0 bg-primary" id="sectionFooter">
+            <!-- <div class="section footer mb-0 bg-primary" id="sectionFooter">
             <div class="container">
               <div class="row footer-row">
                 <div class="col-12 text-right">
@@ -127,12 +130,21 @@
                 </div>
               </div>
             </div>
+          </div> -->
           </div>
         </div>
-        
+      </div>
+    </home-layout>
+    <div class="section footer fixed-bottom bg-primary">
+      <div class="container copyright pt-3 pb-3">
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="mb-0">© Copyright 2023 - UNJANI - All Rights Reserved</p>
+          </div>
+        </div>
       </div>
     </div>
-  </home-layout>
+  </div>
 </template>
 
 <script>
@@ -254,13 +266,13 @@ export default {
     },
   },
   mounted() {
-    document.body.classList.add("no-footer");
+    // document.body.classList.add("no-footer");
     window.addEventListener("scroll", this.onWindowScroll);
     window.addEventListener("resize", this.onWindowResize);
     window.addEventListener("click", this.onWindowClick);
   },
   beforeDestroy() {
-    document.body.classList.remove("no-footer");
+    // document.body.classList.remove("no-footer");
     window.removeEventListener("scroll", this.onWindowScroll);
     window.removeEventListener("resize", this.onWindowResize);
     window.removeEventListener("click", this.onWindowClick);
@@ -268,8 +280,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.custom-rounded {
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-}
+  .custom-rounded {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+  }
+  // .footer {
+  //   margin-top: auto!important;
+  //   position: absolute;
+  //   bottom: 0;
+  //   width: 100%;
+  // }
 </style>
