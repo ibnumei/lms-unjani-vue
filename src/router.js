@@ -12,6 +12,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "home" */ "./views/home"),
   },
   {
+    path: "/login",
+    component: () => import(/* webpackChunkName: "home" */ "./views/auth"),
+  },
+  {
     path: adminRoot,
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/dashboards`,
