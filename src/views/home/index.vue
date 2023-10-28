@@ -15,7 +15,7 @@
 
     <div class="row mb-4">
       <b-colxx lg="6" class="home-carousel pr-4 pl-3">
-        <div class="card row">
+        <div class="card row" @click="testx">
           <div class="card-body text-center">
             <div>
               <i class="iconsminds-inbox-into large-icon"></i>
@@ -39,7 +39,6 @@
     <div class="row">
       <div class="card col-12 p-0">
         <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
-        <hr />
         <div class="home-carousel">
           <glide-component :settings="glideBookOption">
             <div
@@ -110,8 +109,158 @@ export default {
       ],
     };
   },
-  methods: {},
-  mounted() {},
+  methods: {
+    async getImagesFromName() {
+      const response = [
+        {
+          id_book: 1,
+          biblio_id: 21,
+          title: "Psikologi Sosial, Jilid 2",
+          edition: "5",
+          isbn_issn: "",
+          publisher_name: "Erlangga",
+          publish_year: "1985",
+          collation: "x,263 hal.illus, 17.5x25 cm",
+          series_title: "",
+          call_number: "302 SEA p",
+          language_name: "Indonesia",
+          place_place: "Jakarta",
+          notes: "",
+          image: "Psikologi_Sosial,_Jilid_2.jpg.jpg",
+          classification: null,
+          spec_detail_info: "",
+          uid: null,
+          input_date: "2007-01-01 05:12:40",
+          last_date: null,
+          isActive: null,
+          modifiedDate: null,
+          modifiedBy: null,
+          createdDate: "2023-10-22T19:25:08.000Z",
+          createdBy: null,
+        },
+        {
+          id_book: 2,
+          biblio_id: 20,
+          title: "Psikologi Sosial, Jilid 1",
+          edition: "5",
+          isbn_issn: "",
+          publisher_name: "Erlangga",
+          publish_year: "1985",
+          collation: "xii,275 hal.illus.17.5x25 cm",
+          series_title: "",
+          call_number: "302 SEA p",
+          language_name: "Indonesia",
+          place_place: "Jakarta",
+          notes: "",
+          image: "Psikologi_Sosial,_Jilid_1.jpg.jpg",
+          classification: null,
+          spec_detail_info: "",
+          uid: null,
+          input_date: "2007-01-01 05:12:40",
+          last_date: null,
+          isActive: null,
+          modifiedDate: null,
+          modifiedBy: null,
+          createdDate: "2023-10-22T19:25:08.000Z",
+          createdBy: null,
+        },
+        {
+          id_book: 3,
+          biblio_id: 19,
+          title:
+            "Psikologi Perkembangan : Pendekatan ekologi kaitannya dengan konsep diri dan penyesuaian diri pada remaja",
+          edition: "",
+          isbn_issn: "979-3304-58-8",
+          publisher_name: "PT. Refika Aditama",
+          publish_year: "2009",
+          collation: "v,233 hlm,;24x16 cm",
+          series_title: "",
+          call_number: "155.25 AGU p",
+          language_name: "Indonesia",
+          place_place: "Bandung",
+          notes: "",
+          image: "Psikologi_Perkembangan_Hendriatil.jpg.jpg",
+          classification: null,
+          spec_detail_info: "",
+          uid: null,
+          input_date: "2007-01-01 05:12:40",
+          last_date: null,
+          isActive: null,
+          modifiedDate: null,
+          modifiedBy: null,
+          createdDate: "2023-10-22T19:25:08.000Z",
+          createdBy: null,
+        },
+        {
+          id_book: 4,
+          biblio_id: 17,
+          title: "Kimia Anorganik Dasar",
+          edition: "",
+          isbn_issn: "979-456-029-4",
+          publisher_name: "Perusahaan Umum Telekomunikasi",
+          publish_year: "1989",
+          collation: "viii, 665 hlm; ilus; Indeks:657-665; 23x15,5 cm",
+          series_title: "",
+          call_number: "546 COT k",
+          language_name: "Indonesia",
+          place_place: "Jakarta",
+          notes: "",
+          image: "Kimia_Anorganik_Dasar.jpg.jpg",
+          classification: null,
+          spec_detail_info: "",
+          uid: null,
+          input_date: "2007-01-01 05:12:40",
+          last_date: null,
+          isActive: null,
+          modifiedDate: null,
+          modifiedBy: null,
+          createdDate: "2023-10-22T19:25:08.000Z",
+          createdBy: null,
+        },
+        {
+          id_book: 5,
+          biblio_id: 18,
+          title:
+            "Psikologi Perkembangan : Suatu Pendekatan Sepanjang Rentang Kehidupan",
+          edition: "5",
+          isbn_issn: "13-00-008-8",
+          publisher_name: "Erlangga",
+          publish_year: "1980",
+          collation: "xii, 447 hlm; ilus; 25 x 17,5 cm",
+          series_title: "",
+          call_number: "155.25 HUR p",
+          language_name: "Indonesia",
+          place_place: "Jakarta",
+          notes: "",
+          image: "13072009121227_17753.jpg.jpg",
+          classification: null,
+          spec_detail_info: "",
+          uid: null,
+          input_date: "2007-01-01 05:12:40",
+          last_date: null,
+          isActive: null,
+          modifiedDate: null,
+          modifiedBy: null,
+          createdDate: "2023-10-22T19:25:08.000Z",
+          createdBy: null,
+        },
+      ];
+      this.bookContent = []
+      response.forEach((element) => {
+        // console.log(element.image)
+         const imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
+
+         this.bookContent.push({ imgSrc })
+      });
+      console.log(this.bookContent)
+    },
+    testx () {
+      console.log('router')
+    }
+  },
+  mounted() {
+    this.getImagesFromName();
+  },
   beforeDestroy() {},
 };
 </script>
