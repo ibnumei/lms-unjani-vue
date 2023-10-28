@@ -50,10 +50,12 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
+import jwtDecode from 'vue-jwt-decode'
 
 export default {
   components: {
@@ -72,13 +74,16 @@ export default {
   },
   methods: {
     async formSubmit() {
-      // console.log(apiBackend, this.form)
-      const response = await axios.post(`${apiBackend}/login`, this.form, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-      console.log(response);
+      try {
+        this.processing = true
+        const response = await axios.post(`${apiBackend}/login`, this.form);
+        const tokenDecode = jwtDecode.decode(_.get(response, 'data.data'))
+        localStorage.setItem('user', JSON.stringify(tokenDecode))
+      } catch (error) {
+        this.$notify('error', 'Peringatan!', 'Nama atau Password Salah', { duration: 3000, permanent: false });
+      } finally {
+        this.processing = false
+      }
     },
   },
   mounted() {},
