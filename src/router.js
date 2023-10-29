@@ -9,7 +9,37 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    component: () => import(/* webpackChunkName: "home" */ "./views/home"),
+    name: "landing-page",
+    component: () => import("./views/home"),
+  },
+  {
+    path: "/login",
+    component: () => import("./views/auth"),
+  },
+  {
+    path: "/login/:path",
+    name: "login",
+    component: () => import("./views/auth"),
+  },
+  {
+    path: "/peminjaman",
+    name: "peminjaman",
+    component: () => import("./views/dashboard/Peminjaman.vue"),
+  },
+  {
+    path: "/pengembalian",
+    name: "pengembalian",
+    component: () => import("./views/dashboard/Pengembalian.vue"),
+  },
+  {
+    path: "/buku/cari/:keyword",
+    name: "cari-buku",
+    component: () => import("./views/book/SearchResult.vue"),
+  },
+  {
+    path: "/buku/detail/:id",
+    name: "detail-buku",
+    component: () => import("./views/book/Detail.vue"),
   },
   {
     path: adminRoot,

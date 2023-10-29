@@ -4,41 +4,18 @@
       <div class="col-12 p-0">
         <div class="home-carousel">
           <b-input-group class="mb-3">
-            <b-form-input v-model="searchKeyword" class="custom-rounded" />
+            <b-form-input v-model="keyword" class="custom-rounded" />
             <b-input-group-append>
-              <b-button @click="searchBook" variant="outline-white">Cari Buku</b-button>
+              <b-button @click="goSearch" variant="outline-white">Cari Buku</b-button>
             </b-input-group-append>
           </b-input-group>
         </div>
       </div>
     </div>
 
-    <div class="row mb-4">
-      <b-colxx lg="6" class="home-carousel pr-4 pl-3">
-        <div class="card row" @click="redirectLogin('pengembalian')">
-          <div class="card-body text-center">
-            <div>
-              <i class="iconsminds-inbox-into large-icon"></i>
-              <h5 class="mb-3 font-weight-semibold">Pengembalian</h5>
-            </div>
-          </div>
-        </div>
-      </b-colxx>
-      <b-colxx lg="6" class="home-carousel pl-4 pr-3">
-        <div class="card row" @click="redirectLogin('peminjaman')">
-          <div class="card-body text-center">
-            <div>
-              <i class="iconsminds-inbox-out large-icon"></i>
-              <h5 class="mb-3 font-weight-semibold">Peminjaman</h5>
-            </div>
-          </div>
-        </div>
-      </b-colxx>
-    </div>
-
     <div class="row">
       <div class="card col-12 p-0">
-        <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
+        <h2 class="text-dark pl-4 mt-4">Daftar Pencarian Buku</h2>
         <div class="home-carousel">
           <glide-component :settings="glideBookOption">
             <div
@@ -62,24 +39,38 @@
         </div>
       </div>
     </div>
+
+    
   </b-body>
 </template>
 
 <script>
+import GlideComponent from "@/components/Carousel/GlideComponent";
+import ImageList from "@/components/Customs/ImageList";
 import _ from 'lodash'
-import axios from 'axios';
-import GlideComponent from "../../components/Carousel/GlideComponent";
+import axios from "axios";
 import Body from "../common/Body.vue";
+import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
+import jwtDecode from 'vue-jwt-decode'
 
 export default {
   components: {
     "glide-component": GlideComponent,
     "b-body": Body,
+    "e-text": Text,
+    "image-list-item": ImageList,
   },
   data() {
     return {
-      searchKeyword: null,
+      selectedItems: [],
+      items: [
+        {
+          id: 1,
+          title: 'asd',
+          img: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/Psikologi_Sosial,_Jilid_2.jpg.jpg&width=200`
+        }
+      ],
       glideBookOption: {
         type: "carousel",
         gap: 30,
@@ -112,54 +103,61 @@ export default {
           imgSrc: "/assets/img/books/createthumb-6.jfif",
         },
       ],
+      keyword: null
     };
   },
   methods: {
-    async getImagesFromName() {
-      const response = await axios.get(`${apiBackend}/book?page=1&size=10`);
-      const books = _.get(response, 'data.data.tutorials', [])
-
-      this.bookContent = []
-      books.forEach((element) => {
-        const imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
-         this.bookContent.push({
-          ...element,
-          imgSrc
-         })
-      });
+    async goBack() {
+      this.$router.go({
+        name: 'landing-page',
+      })
     },
     itemAction (item) {
       console.log(item)
       console.log(item.id_book)
-      !!item.id_book && this.$router.push({
+      this.$router.push({
         name: 'detail-buku',
         params: {
           id: item.id_book
         }
       })
     },
-    searchBook () {
-      if (!!this.searchKeyword) {
-        this.$router.push({
-          name: 'cari-buku',
-          params: {
-            keyword: this.searchKeyword
-          }
-        })
+    goSearch () {
+      if (!!this.keyword) {
+        // this.$router.go({
+        //   name: 'cari-buku',
+        //   params: {
+        //     keyword: this.keyword
+        //   }
+        // })
+        this.searchBook()
       }
     },
-    redirectLogin (path) {
-      this.$router.push({
-        name: 'login',
-        params: {
-          path
-        }
-      })
+    async searchBook () {
+      let urlEncodedString = encodeURIComponent(this.keyword);
+      try {
+        this.processing = true
+        const response = await axios.get(`${apiBackend}/book?title=${urlEncodedString}&page=1&size=10`);
+        const books = _.get(response, 'data.data.tutorials', [])
+        this.bookContent = []
+        books.forEach(element => {
+          this.bookContent.push({
+            ...element,
+            imgSrc: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
+          })
+        });
+      } catch (error) {
+        this.$notify('error', 'Peringatan!', 'Terjadi Kesalahan Sistem', { duration: 3000, permanent: false });
+      } finally {
+        this.processing = false
+      }
     }
   },
+  computed: {
+  },
   mounted() {
-    this.getImagesFromName();
-    localStorage.removeItem('user')
+    this.keyword = this.$route.params.keyword
+    this.searchBook()
   },
   beforeDestroy() {},
 };
