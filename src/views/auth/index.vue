@@ -2,7 +2,6 @@
   <b-body>
     <b-card>
       <h1>Login</h1>
-      <hr />
       <b-row>
         <e-text label="Nama" :required="true" v-model="form.nama" />
         <e-text
@@ -12,7 +11,7 @@
           v-model="form.password"
         />
       </b-row>
-      <div class="card col-12 p-0">
+      <div class="col-12 p-0">
         <div class="home-carousel">
           <b-form class="av-tooltip tooltip-label-bottom">
             <div class="d-flex justify-content-end align-items-center">
@@ -79,6 +78,9 @@ export default {
         const response = await axios.post(`${apiBackend}/login`, this.form);
         const tokenDecode = jwtDecode.decode(_.get(response, 'data.data'))
         localStorage.setItem('user', JSON.stringify(tokenDecode))
+        this.$router.push({
+          name: this.path,
+        })
       } catch (error) {
         this.$notify('error', 'Peringatan!', 'Nama atau Password Salah', { duration: 3000, permanent: false });
       } finally {
@@ -86,7 +88,19 @@ export default {
       }
     },
   },
-  mounted() {},
+  computed: {
+    path () {
+      return this.$route.params.path
+    }
+  },
+  mounted() {
+    if (!['peminjaman', 'pengembalian'].includes(this.path)) {
+      this.$router.push({
+        name: 'landing-page',
+      })
+    }
+    localStorage.removeItem('user')
+  },
   beforeDestroy() {},
 };
 </script>

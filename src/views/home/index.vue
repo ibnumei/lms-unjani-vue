@@ -15,7 +15,7 @@
 
     <div class="row mb-4">
       <b-colxx lg="6" class="home-carousel pr-4 pl-3">
-        <div class="card row" @click="testx">
+        <div class="card row" @click="redirectLogin('pengembalian')">
           <div class="card-body text-center">
             <div>
               <i class="iconsminds-inbox-into large-icon"></i>
@@ -25,7 +25,7 @@
         </div>
       </b-colxx>
       <b-colxx lg="6" class="home-carousel pl-4 pr-3">
-        <div class="card row">
+        <div class="card row" @click="redirectLogin('peminjaman')">
           <div class="card-body text-center">
             <div>
               <i class="iconsminds-inbox-out large-icon"></i>
@@ -254,12 +254,18 @@ export default {
       });
       console.log(this.bookContent)
     },
-    testx () {
-      console.log('router')
+    redirectLogin (path) {
+      this.$router.push({
+        name: 'login',
+        params: {
+          path
+        }
+      })
     }
   },
   mounted() {
     this.getImagesFromName();
+    localStorage.removeItem('user')
   },
   beforeDestroy() {},
 };

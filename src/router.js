@@ -9,11 +9,22 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
+    name: "landing-page",
     component: () => import(/* webpackChunkName: "home" */ "./views/home"),
   },
   {
     path: "/login",
     component: () => import(/* webpackChunkName: "home" */ "./views/auth"),
+  },
+  {
+    path: "/login/:path",
+    name: "login",
+    component: () => import(/* webpackChunkName: "home" */ "./views/auth"),
+  },
+  {
+    path: "/peminjaman",
+    name: "peminjaman",
+    component: () => import(/* webpackChunkName: "home" */ "./views/dashboard/Peminjaman.vue"),
   },
   {
     path: adminRoot,
