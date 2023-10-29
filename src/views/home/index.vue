@@ -45,6 +45,7 @@
               class="card"
               v-for="(f, index) in bookContent"
               :key="`bookContent_${index}`"
+              @click="itemAction(f)"
             >
               <b-card class="flex-row" no-body>
                 <div class="w-100 position-relative">
@@ -65,8 +66,11 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import axios from 'axios';
 import GlideComponent from "../../components/Carousel/GlideComponent";
 import Body from "../common/Body.vue";
+import { apiBackend } from "@/constants/config";
 
 export default {
   components: {
@@ -112,148 +116,27 @@ export default {
   },
   methods: {
     async getImagesFromName() {
-      const response = [
-        {
-          id_book: 1,
-          biblio_id: 21,
-          title: "Psikologi Sosial, Jilid 2",
-          edition: "5",
-          isbn_issn: "",
-          publisher_name: "Erlangga",
-          publish_year: "1985",
-          collation: "x,263 hal.illus, 17.5x25 cm",
-          series_title: "",
-          call_number: "302 SEA p",
-          language_name: "Indonesia",
-          place_place: "Jakarta",
-          notes: "",
-          image: "Psikologi_Sosial,_Jilid_2.jpg.jpg",
-          classification: null,
-          spec_detail_info: "",
-          uid: null,
-          input_date: "2007-01-01 05:12:40",
-          last_date: null,
-          isActive: null,
-          modifiedDate: null,
-          modifiedBy: null,
-          createdDate: "2023-10-22T19:25:08.000Z",
-          createdBy: null,
-        },
-        {
-          id_book: 2,
-          biblio_id: 20,
-          title: "Psikologi Sosial, Jilid 1",
-          edition: "5",
-          isbn_issn: "",
-          publisher_name: "Erlangga",
-          publish_year: "1985",
-          collation: "xii,275 hal.illus.17.5x25 cm",
-          series_title: "",
-          call_number: "302 SEA p",
-          language_name: "Indonesia",
-          place_place: "Jakarta",
-          notes: "",
-          image: "Psikologi_Sosial,_Jilid_1.jpg.jpg",
-          classification: null,
-          spec_detail_info: "",
-          uid: null,
-          input_date: "2007-01-01 05:12:40",
-          last_date: null,
-          isActive: null,
-          modifiedDate: null,
-          modifiedBy: null,
-          createdDate: "2023-10-22T19:25:08.000Z",
-          createdBy: null,
-        },
-        {
-          id_book: 3,
-          biblio_id: 19,
-          title:
-            "Psikologi Perkembangan : Pendekatan ekologi kaitannya dengan konsep diri dan penyesuaian diri pada remaja",
-          edition: "",
-          isbn_issn: "979-3304-58-8",
-          publisher_name: "PT. Refika Aditama",
-          publish_year: "2009",
-          collation: "v,233 hlm,;24x16 cm",
-          series_title: "",
-          call_number: "155.25 AGU p",
-          language_name: "Indonesia",
-          place_place: "Bandung",
-          notes: "",
-          image: "Psikologi_Perkembangan_Hendriatil.jpg.jpg",
-          classification: null,
-          spec_detail_info: "",
-          uid: null,
-          input_date: "2007-01-01 05:12:40",
-          last_date: null,
-          isActive: null,
-          modifiedDate: null,
-          modifiedBy: null,
-          createdDate: "2023-10-22T19:25:08.000Z",
-          createdBy: null,
-        },
-        {
-          id_book: 4,
-          biblio_id: 17,
-          title: "Kimia Anorganik Dasar",
-          edition: "",
-          isbn_issn: "979-456-029-4",
-          publisher_name: "Perusahaan Umum Telekomunikasi",
-          publish_year: "1989",
-          collation: "viii, 665 hlm; ilus; Indeks:657-665; 23x15,5 cm",
-          series_title: "",
-          call_number: "546 COT k",
-          language_name: "Indonesia",
-          place_place: "Jakarta",
-          notes: "",
-          image: "Kimia_Anorganik_Dasar.jpg.jpg",
-          classification: null,
-          spec_detail_info: "",
-          uid: null,
-          input_date: "2007-01-01 05:12:40",
-          last_date: null,
-          isActive: null,
-          modifiedDate: null,
-          modifiedBy: null,
-          createdDate: "2023-10-22T19:25:08.000Z",
-          createdBy: null,
-        },
-        {
-          id_book: 5,
-          biblio_id: 18,
-          title:
-            "Psikologi Perkembangan : Suatu Pendekatan Sepanjang Rentang Kehidupan",
-          edition: "5",
-          isbn_issn: "13-00-008-8",
-          publisher_name: "Erlangga",
-          publish_year: "1980",
-          collation: "xii, 447 hlm; ilus; 25 x 17,5 cm",
-          series_title: "",
-          call_number: "155.25 HUR p",
-          language_name: "Indonesia",
-          place_place: "Jakarta",
-          notes: "",
-          image: "13072009121227_17753.jpg.jpg",
-          classification: null,
-          spec_detail_info: "",
-          uid: null,
-          input_date: "2007-01-01 05:12:40",
-          last_date: null,
-          isActive: null,
-          modifiedDate: null,
-          modifiedBy: null,
-          createdDate: "2023-10-22T19:25:08.000Z",
-          createdBy: null,
-        },
-      ];
-      this.bookContent = []
-      response.forEach((element) => {
-        // console.log(element.image)
-         const imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
+      const response = await axios.get(`${apiBackend}/book?page=1&size=10`);
+      const books = _.get(response, 'data.data.tutorials', [])
 
-         this.bookContent.push({ imgSrc })
+      this.bookContent = []
+      books.forEach((element) => {
+        const imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
+         this.bookContent.push({
+          ...element,
+          imgSrc
+         })
       });
-      console.log(this.bookContent)
+    },
+    itemAction (item) {
+      console.log(item)
+      console.log(item.id_book)
+      !!item.id_book && this.$router.push({
+        name: 'detail-buku',
+        params: {
+          id: item.id_book
+        }
+      })
     },
     searchBook () {
       if (!!this.searchKeyword) {
