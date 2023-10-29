@@ -4,9 +4,9 @@
       <div class="col-12 p-0">
         <div class="home-carousel">
           <b-input-group class="mb-3">
-            <b-form-input class="custom-rounded" />
+            <b-form-input v-model="searchKeyword" class="custom-rounded" />
             <b-input-group-append>
-              <b-button variant="outline-white">Cari Buku</b-button>
+              <b-button @click="searchBook" variant="outline-white">Cari Buku</b-button>
             </b-input-group-append>
           </b-input-group>
         </div>
@@ -75,6 +75,7 @@ export default {
   },
   data() {
     return {
+      searchKeyword: null,
       glideBookOption: {
         type: "carousel",
         gap: 30,
@@ -253,6 +254,16 @@ export default {
          this.bookContent.push({ imgSrc })
       });
       console.log(this.bookContent)
+    },
+    searchBook () {
+      if (!!this.searchKeyword) {
+        this.$router.push({
+          name: 'cari-buku',
+          params: {
+            keyword: this.searchKeyword
+          }
+        })
+      }
     },
     redirectLogin (path) {
       this.$router.push({

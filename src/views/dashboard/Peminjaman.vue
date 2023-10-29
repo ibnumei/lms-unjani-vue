@@ -1,29 +1,39 @@
 <template>
   <b-body>
     <b-card>
-      <h3>Scan buku</h3>
+      <h3>Cari Buku</h3>
+      <b-row>
+        <e-text label="" :required="true" />
+      </b-row>
+      <div class="d-flex justify-content-end align-items-center">
+        <b-button
+          @click="goBack"
+          variant="primary"
+          size="lg"
+          :disabled="processing"
+          :class="{
+            'btn-multiple-state btn-shadow': true,
+          }"
+        >
+          <span class="label">Cari</span>
+        </b-button>
+      </div>
     </b-card>
     <b-card class="mt-4">
       <h3>Daftar buku</h3>
       <b-table hover :items="items" />
-      <div class="mt-4 col-12 p-0">
-        <div class="">
-          <b-form class="av-tooltip tooltip-label-bottom">
-            <div class="d-flex justify-content-end align-items-center">
-              <b-button
-                @click="goBack"
-                variant="primary"
-                size="lg"
-                :disabled="processing"
-                :class="{
-                  'btn-multiple-state btn-shadow': true,
-                }"
-              >
-                <span class="label">Kembali</span>
-              </b-button>
-            </div>
-          </b-form>
-        </div>
+      <div class="d-flex justify-content-end align-items-center">
+        <b-button
+          @click="goBack"
+          variant="primary"
+          size="lg"
+          :disabled="processing"
+          :class="{
+            'btn-multiple-state btn-shadow': true,
+          }"
+        >
+          <span class="label">Kembali</span>
+        </b-button>
       </div>
     </b-card>
     
