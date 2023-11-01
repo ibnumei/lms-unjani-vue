@@ -425,6 +425,11 @@ const routes = [
         path: "blank-page",
         component: () =>
           import(/* webpackChunkName: "blank-page" */ "./views/app/blank-page")
+      },
+      {
+        path: "master-member",
+        component: () =>
+          import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterMember")
       }
     ]
   },
