@@ -26,7 +26,7 @@
               @click="onReset"
               variant="primary default"
               size="sm"
-              id="uiBtnCreditReviewReset"
+              id="uiBtnMasterMemberReset"
               class="mt-2 btn-shadow mr-2"
             >
               <em class="simple-icon-reload"/>Reset
@@ -35,7 +35,7 @@
               @click="searchData"
               variant="success default"
               size="sm"
-              id="uiBtnCreditReviewCari"
+              id="uiBtnMasterMemberCari"
               class="mt-2 btn-shadow"
             >
               <em class="simple-icon-magnifier"/>Cari
@@ -47,7 +47,7 @@
     <e-paging-server
       ref="tblPagingMember"
       title="List Member Data" class="mt-2"
-      picker="pagingPendingTaskMaintenance"
+      picker="pagingMemberList"
       :perPage=25
       search=""
       sortDesc

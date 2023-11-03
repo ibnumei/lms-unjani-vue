@@ -430,6 +430,16 @@ const routes = [
         path: "master-member",
         component: () =>
           import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterMember")
+      },
+      {
+        path: "master-book",
+        component: () =>
+          import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterBook")
+      },
+      {
+        path: "master-rent",
+        component: () =>
+          import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterRent")
       }
     ]
   },
