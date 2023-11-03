@@ -27,11 +27,9 @@ import VueScrollTo from 'vue-scrollto'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import { getCurrentLanguage } from './utils'
-import VueQuagga from "vue-quaggajs";
 
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);
-Vue.use(VueQuagga);
 const messages = { en: en, es: es };
 const locale = getCurrentLanguage();
 const i18n = new VueI18n({
