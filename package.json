@@ -9,6 +9,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@glidejs/glide": "^3.4.1",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",

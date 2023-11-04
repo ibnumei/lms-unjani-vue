@@ -16,10 +16,23 @@
         <video class="qr-scan"  ref="videoObject"></video>
       </div>
     </b-modal>
+    <b-modal 
+      :hideHeaderClose="false" 
+      :no-close-on-backdrop="true" 
+      id="modallgg" 
+      ref="modalGeneratedRent" 
+      size="lg" 
+      title="Harap Simpan QR Berikut" 
+      hide-footer
+    >
+      <div class="d-flex justify-content-center align-items-center">
+        <qrcode :value="modalGeneratedRent" :options="{ width: '100%', height: '100%' }">
+        </qrcode>
+      </div>
+    </b-modal>
     <v-loading :active.sync="processing" :is-full-page="true"></v-loading>
     <b-card class="p-5">
       <div class="d-flex justify-content-center align-items-center">
-        {{qrCodeContent}}
         <b-button
           @click="openScanner"
           variant="primary"
@@ -36,8 +49,23 @@
     </b-card>
     <b-card class="mt-4">
       <h3>Daftar buku</h3>
-      <b-table hover :items="items" :fields="tabelHeader"/>
-      <div class="d-flex justify-content-end align-items-center">
+      <b-table hover :items="items" :fields="tabelHeader">
+        <template #cell(actions)="row">
+          <b-button :id="`button_table_${row.index}`" size="xs" @click="buttonAction(row)" variant="outline-primary" class="default">
+            <em class="simple-icon-trash"></em> Hapus
+          </b-button>
+        </template>
+      </b-table>
+      <div class="d-flex justify-content-end">
+        <b-button
+          @click="submitRent"
+          variant="primary"
+          size="lg"
+          :disabled="processing"
+          class="btn-multiple-state btn-shadow mr-2"
+        >
+          <span class="label">Submit</span>
+        </b-button>
         <b-button
           @click="goBack"
           variant="primary"
@@ -76,6 +104,7 @@ export default {
     return {
       processing: false,
       qrCodeContent: "",
+      modalGeneratedRent: null,
       tabelHeader: [
           {
             key: 'biblio_id',
@@ -96,19 +125,76 @@ export default {
             key: 'inventory_code',
             label: 'Rak Buku',
             sortable: false,
-          }
+          },
+          {
+            key: 'actions',
+            label: 'Action',
+            sortable: false,
+          },
         ],
-      items: [
-        { 
-          biblio_id: 1, 
-          title: 'Mark', 
-          fullAuthor: 'Otto',
-          inventory_code: '91287321'
-        },
-      ],
+      items: [],
     };
   },
   methods: {
+    commonErrorNotif () {
+      return this.$notify(
+        'error', 
+        'Perhatian!', 
+        'Terjadi Kesalahan', 
+        { 
+          duration: 3000, 
+          permanent: false 
+      });
+    },
+    showQRGenerated () {
+      this.$refs.modalGeneratedRent.show()
+    },
+    async submitRent () {
+      if (this.items.length !== 2) {
+        return this.$notify(
+          'error', 
+          'Peringatan!', 
+          'Jumlah buku harus 2', 
+          { 
+            duration: 3000, 
+            permanent: false 
+        });
+      }
+      try {
+        this.$refs.loading.show()
+
+        const payload = []
+        payload.push(_.get(this.items, '[0]items'))
+        payload.push(_.get(this.items, '[1]items'))
+        const headers = {
+          token: _.get(this.currentUser, 'token')
+        }
+        const response = await axios.post(`${apiBackend}/rent-book`, payload, { headers });
+        const data = _.get(response, 'data.data')
+        if (!!data) {
+          this.$notify(
+          'success', 
+          'Notifikasi!', 
+          'Buku Berhasil Ditambah', 
+          { 
+            duration: 3000, 
+            permanent: false 
+          });
+        }
+        this.modalGeneratedRent = data;
+        this.showQRGenerated()
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      } finally {
+        this.$refs.loading.hide()
+      }
+    },
+    buttonAction (items) {
+      const x = [ ...this.items ]
+      _.pullAt(x, items.index);
+      this.items = x;
+    },
     openScanner () {
       this.$refs.modalScanner.show()
       setTimeout(() => {
@@ -116,10 +202,9 @@ export default {
       }, 10)
     },
     async goBack() {
-      // this.$router.push({
-      //   name: 'landing-page',
-      // })
-      console.log(this.currentUser)
+      this.$router.push({
+        name: 'landing-page',
+      })
     },
     handleQrScan(result) {
       try {
@@ -130,20 +215,25 @@ export default {
         const titleArr = data.match(regexTitle);
 
         if (itemCodeArr && titleArr) {
-          this.bookProcess = false
-          this.$refs.modalScanner.hide()
           const itemCode = itemCodeArr[1];
           const title = titleArr[1];
+          // handle multiple book with same item_code
+          const existingBooks = _.find(this.items, { item_code: itemCode });
+          if (!!existingBooks) {
+            return
+          }
+          this.bookProcess = false
+          this.$refs.modalScanner.hide()
           const payload = {
             itemCode,
             title
           }
-          console.log('hmm?')
           this.searchRentBook(payload)
           this.qrScanner.stop();
         }
       } catch (error) {
         console.log(error)
+        this.commonErrorNotif()
       }
     },
     async searchRentBook (payload) {
@@ -158,6 +248,7 @@ export default {
         data.inventory_code = _.get(data, 'items[0].inventory_code')
         this.items.push(data)
       } catch (error) {
+        this.commonErrorNotif()
         console.log(error)
       } finally {
         this.$refs.loading.hide()
@@ -196,5 +287,24 @@ export default {
 .custom-rounded {
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
+}
+.qrcode {
+  display: inline-block;
+  font-size: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+.qrcode__image {
+  background-color: #fff;
+  border: 0.25rem solid #fff;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+  height: 15%;
+  left: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 15%;
 }
 </style>
