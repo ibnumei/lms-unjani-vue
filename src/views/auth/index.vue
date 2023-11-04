@@ -55,6 +55,8 @@ import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
 import jwtDecode from 'vue-jwt-decode'
+import { setCurrentUser } from '@/utils'
+import { mapMutations } from 'vuex';
 
 export default {
   components: {
@@ -72,11 +74,15 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(['setUser']),
     async formSubmit() {
       try {
         this.processing = true
         const response = await axios.post(`${apiBackend}/login`, this.form);
-        const tokenDecode = jwtDecode.decode(_.get(response, 'data.data'))
+        const tokenDecode = jwtDecode.decode(_.get(response, 'data.data', {}))
+        tokenDecode.token = _.get(response, 'data.data', {})
+        setCurrentUser(tokenDecode)
+        this.setUser(tokenDecode)
         localStorage.setItem('user', JSON.stringify(tokenDecode))
         this.$router.push({
           name: this.path,
