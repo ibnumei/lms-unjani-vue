@@ -12,7 +12,6 @@
     >
       <slot name="button"></slot>
       <div class="qr-scanner">
-        {{qrCodeContent}}
         <video class="qr-scan"  ref="videoObject"></video>
       </div>
     </b-modal>
@@ -147,7 +146,13 @@ export default {
       });
     },
     showQRGenerated () {
-      this.$refs.modalGeneratedRent.show()
+      // this.$refs.modalGeneratedRent.show()
+      !!this.modalGeneratedRent && this.$router.push({
+        name: 'generate-qr',
+        params: {
+          qr: this.modalGeneratedRent
+        }
+      })
     },
     async submitRent () {
       if (this.items.length !== 2) {

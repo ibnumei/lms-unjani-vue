@@ -13,6 +13,11 @@ const routes = [
     component: () => import("./views/home"),
   },
   {
+    path: "/generate-qr/:qr",
+    name: "generate-qr",
+    component: () => import("./views/qr/Generate.vue"),
+  },
+  {
     path: "/login",
     component: () => import("./views/auth"),
   },
