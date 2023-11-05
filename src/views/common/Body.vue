@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav
-      class="navbar navbar-expand-lg navbar-dark bg-transparent fixed-top mt-1"
+      class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top mt-0"
     >
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
@@ -19,7 +19,7 @@
           <div class="content-container" id="home">
             <div class="section home" id="sectionHome">
               <div class="container">
-                <div class="row" id="homeRow">
+                <div class="row mt-4" id="homeRow">
                   <div class="mt-5">&nbsp;</div>
                   <b-colxx xxs="12" class="pl-0 pr-0 mt-4">
                     <div>
