@@ -164,8 +164,8 @@ export default {
         this.$refs.loading.show()
 
         const payload = []
-        payload.push(_.get(this.items, '[0]items'))
-        payload.push(_.get(this.items, '[1]items'))
+        payload.push(_.get(this.items, '[0]items[0]'))
+        payload.push(_.get(this.items, '[1]items[0]'))
         const headers = {
           token: _.get(this.currentUser, 'token')
         }
