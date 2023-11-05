@@ -1,5 +1,6 @@
 <template>
   <b-body>
+    <e-loading ref="loading" />
     <div class="row">
       <div class="col-12 p-0">
         <div class="home-carousel">
@@ -85,6 +86,8 @@ import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
+import Loading from "@/components/Customs/Loading";
+
 
 export default {
   props: {
@@ -92,6 +95,7 @@ export default {
   },
   components: {
     "glide-component": GlideComponent,
+    "e-loading": Loading,
     "b-body": Body,
     "e-text": Text,
     "image-list-item": ImageList,
@@ -150,11 +154,29 @@ export default {
         this.fetchPage();
       }, 10);
     },
+    commonErrorNotif () {
+      return this.$notify(
+        'error', 
+        'Perhatian!', 
+        'Terjadi Kesalahan', 
+        { 
+          duration: 3000, 
+          permanent: false 
+      });
+    },
     async fetchPage() {
-      const response = await axios.get(
-        `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`
-      );
-      this.response = _.get(response, "data.data", {});
+      try {
+        this.$refs.loading.show()
+        const response = await axios.get(
+          `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`
+        );
+        this.response = _.get(response, "data.data", {});
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      }  finally {
+        this.$refs.loading.hide()
+      }
     },
     async goBack() {
       this.$router.go({
