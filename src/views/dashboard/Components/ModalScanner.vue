@@ -1,12 +1,14 @@
 <template>
   <b-modal
     :hideHeaderClose="false"
-    :no-close-on-backdrop="false"
+    :no-close-on-backdrop="true"
     id="modallg"
     ref="modalScanner"
     size="lg"
     title="Scan Buku"
     hide-footer
+    v-model="show"
+    @close="closeAction"
   >
     <slot name="button"></slot>
     <div class="qr-scanner">
@@ -25,10 +27,15 @@ export default {
   },
   data () {
     return {
-      qrValue: null
+      qrValue: null,
+      show: false
     }
   },
   methods: {
+    closeAction (asd) {
+      this.show = false
+      this.stopQrScanner()
+    },
     startQrScanner () {
       this.qrScanner = new QrScanner(this.$refs.videoObject, this.handleQrScan, {
         onDecodeError: (error) => {
@@ -52,7 +59,7 @@ export default {
     },
     openScanner () {
       this.qrValue = null
-      this.$refs.modalScanner.show()
+      this.show = true
       setTimeout(() => {
         this.startQrScanner()
       }, 10)
@@ -61,8 +68,8 @@ export default {
       this.qrScanner.stop();
     },
     closeScanner () {
+      this.show = false
       this.stopQrScanner()
-      this.$refs.modalScanner.hide()
     }
   }
 };

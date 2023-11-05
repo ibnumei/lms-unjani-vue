@@ -113,7 +113,6 @@ export default {
       }
     },
     handleQrScan(result) {
-      console.log(result)
       try {
         const data = result;
         const regexItemCode = /itemCode: "([^"]+)"/;
@@ -134,6 +133,8 @@ export default {
             title
           }
           this.searchRentBook(payload)
+          this.$refs.modalScanner.stopQrScanner()
+          this.$refs.modalScanner.closeScanner()
         }
       } catch (error) {
         console.log(error)
@@ -159,9 +160,6 @@ export default {
         data.item_code = _.get(data, 'items[0].item_code')
         data.inventory_code = _.get(data, 'items[0].inventory_code')
         this.items.push(data)
-        if (!!data) {
-          this.$refs.modalScanner.closeScanner()
-        }
       } catch (error) {
         this.commonErrorNotif()
         console.log(error)

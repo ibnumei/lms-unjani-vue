@@ -6,15 +6,6 @@
         <qrcode :value="qr" class="qr-code" :options="{ width: '100%', height: '100%' }">
         </qrcode>
       </div>
-      <b-row>
-        <e-text label="Nama" :required="true" v-model="form.nama" />
-        <e-text
-          label="Password"
-          type="password"
-          :required="true"
-          v-model="form.password"
-        />
-      </b-row>
       <div class="col-12 p-0">
         <div class="home-carousel">
           <b-form class="av-tooltip tooltip-label-bottom">
