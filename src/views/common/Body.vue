@@ -18,7 +18,7 @@
         <div class="main-container">
           <div class="content-container" id="home">
             <div class="section home" id="sectionHome">
-              <div class="container">
+              <div class="container bottom-space">
                 <div class="row mt-4" id="homeRow">
                   <div class="mt-5">&nbsp;</div>
                   <b-colxx xxs="12" class="pl-0 pr-0 mt-4">
@@ -159,5 +159,9 @@ export default {
   .image-container img {
     width: 100%; /* Make the image fill the width of the container */
     height: auto; /* Maintain the original aspect ratio of the image */
+  }
+
+  .bottom-space {
+    margin-bottom: 5em;
   }
 </style>

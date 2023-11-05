@@ -1,42 +1,13 @@
 <template>
   <b-body>
     <e-loading ref="loading" />
-    <b-modal 
-      :hideHeaderClose="false" 
-      :no-close-on-backdrop="false" 
-      id="modallg" 
-      ref="modalScanner" 
-      size="lg" 
-      title="Scan Buku" 
-      hide-footer
-    >
-      <slot name="button"></slot>
-      <div class="qr-scanner">
-        <video class="qr-scan"  ref="videoObject"></video>
-      </div>
-    </b-modal>
-    <b-modal 
-      :hideHeaderClose="false" 
-      :no-close-on-backdrop="true" 
-      id="modallgg" 
-      ref="modalGeneratedRent" 
-      size="lg" 
-      title="Harap Simpan QR Berikut" 
-      hide-footer
-    >
-      <div class="d-flex justify-content-center align-items-center">
-        <qrcode :value="modalGeneratedRent" :options="{ width: '100%', height: '100%' }">
-        </qrcode>
-      </div>
-    </b-modal>
-    <v-loading :active.sync="processing" :is-full-page="true"></v-loading>
+    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
     <b-card class="p-5">
       <div class="d-flex justify-content-center align-items-center">
         <b-button
           @click="openScanner"
           variant="primary"
           size="lg"
-          :disabled="processing"
           :class="{
             'btn-multiple-state btn-shadow': true,
           }"
@@ -46,39 +17,12 @@
         </b-button>
       </div>
     </b-card>
-    <b-card class="mt-4">
-      <h3>Daftar buku</h3>
-      <b-table hover :items="items" :fields="tabelHeader">
-        <template #cell(actions)="row">
-          <b-button :id="`button_table_${row.index}`" size="xs" @click="buttonAction(row)" variant="outline-primary" class="default">
-            <em class="simple-icon-trash"></em> Hapus
-          </b-button>
-        </template>
-      </b-table>
-      <div class="d-flex justify-content-end">
-        <b-button
-          @click="submitRent"
-          variant="primary"
-          size="lg"
-          :disabled="processing"
-          class="btn-multiple-state btn-shadow mr-2"
-        >
-          <span class="label">Submit</span>
-        </b-button>
-        <b-button
-          @click="goBack"
-          variant="primary"
-          size="lg"
-          :disabled="processing"
-          :class="{
-            'btn-multiple-state btn-shadow': true,
-          }"
-        >
-          <span class="label">Kembali</span>
-        </b-button>
-      </div>
-    </b-card>
-    
+    <e-books-table
+      class="mt-4"
+      v-model="items"
+      :show-action="true"
+      @submit-data="submitRent"
+    />
   </b-body>
 </template>
 
@@ -88,49 +32,23 @@ import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
-import jwtDecode from 'vue-jwt-decode'
-import QrScanner from "qr-scanner";
 import Loading from "@/components/Customs/Loading";
 import { mapGetters } from 'vuex';
+import ModalScanner from './Components/ModalScanner.vue'
+import BooksTable from './Components/BooksTable.vue'
 
 export default {
   components: {
     "e-loading": Loading,
     "b-body": Body,
     "e-text": Text,
+    'e-scanner': ModalScanner,
+    'e-books-table': BooksTable
   },
   data() {
     return {
-      processing: false,
       qrCodeContent: "",
       modalGeneratedRent: null,
-      tabelHeader: [
-          {
-            key: 'biblio_id',
-            label: 'ID',
-            sortable: false,
-          },
-          {
-            key: 'title',
-            label: 'Judul',
-            sortable: false,
-          },
-          {
-            key: 'fullAuthor',
-            label: 'Penulis',
-            sortable: false,
-          },
-          {
-            key: 'inventory_code',
-            label: 'Rak Buku',
-            sortable: false,
-          },
-          {
-            key: 'actions',
-            label: 'Action',
-            sortable: false,
-          },
-        ],
       items: [],
     };
   },
@@ -146,7 +64,6 @@ export default {
       });
     },
     showQRGenerated () {
-      // this.$refs.modalGeneratedRent.show()
       !!this.modalGeneratedRent && this.$router.push({
         name: 'generate-qr',
         params: {
@@ -195,25 +112,10 @@ export default {
         this.$refs.loading.hide()
       }
     },
-    buttonAction (items) {
-      const x = [ ...this.items ]
-      _.pullAt(x, items.index);
-      this.items = x;
-    },
-    openScanner () {
-      this.$refs.modalScanner.show()
-      setTimeout(() => {
-        this.startQrScanner()
-      }, 10)
-    },
-    async goBack() {
-      this.$router.push({
-        name: 'landing-page',
-      })
-    },
     handleQrScan(result) {
+      console.log(result)
       try {
-        const data = _.get(result, 'data', '')
+        const data = result;
         const regexItemCode = /itemCode: "([^"]+)"/;
         const regexTitle = /title: "([^"]+)"/;
         const itemCodeArr = data.match(regexItemCode);
@@ -227,19 +129,24 @@ export default {
           if (!!existingBooks) {
             return
           }
-          this.bookProcess = false
-          this.$refs.modalScanner.hide()
           const payload = {
             itemCode,
             title
           }
           this.searchRentBook(payload)
-          this.qrScanner.stop();
         }
       } catch (error) {
         console.log(error)
         this.commonErrorNotif()
       }
+    },
+    openScanner () {
+      this.$refs.modalScanner.openScanner()
+    },
+    async goBack() {
+      this.$router.push({
+        name: 'landing-page',
+      })
     },
     async searchRentBook (payload) {
       try {
@@ -252,6 +159,9 @@ export default {
         data.item_code = _.get(data, 'items[0].item_code')
         data.inventory_code = _.get(data, 'items[0].inventory_code')
         this.items.push(data)
+        if (!!data) {
+          this.$refs.modalScanner.closeScanner()
+        }
       } catch (error) {
         this.commonErrorNotif()
         console.log(error)
@@ -259,17 +169,6 @@ export default {
         this.$refs.loading.hide()
       }
     },
-    startQrScanner () {
-      this.qrScanner = new QrScanner(this.$refs.videoObject, this.handleQrScan, {
-        onDecodeError: (error) => {
-          if (error === "No QR code found") return;
-          console.log(error);
-        },
-        highlightScanRegion: true,
-        highlightCodeOutline: true,
-      });
-      this.qrScanner.start();
-    }
   },
   computed: {
     ...mapGetters(['currentUser']),
