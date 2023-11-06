@@ -1,12 +1,15 @@
 <template>
   <b-body>
+    <e-loading ref="loading" />
     <div class="row">
       <div class="col-12 p-0">
         <div class="home-carousel">
           <b-input-group class="mb-3">
             <b-form-input v-model="keyword" class="custom-rounded" />
             <b-input-group-append>
-              <b-button @click="goSearch" variant="outline-white">Cari Buku</b-button>
+              <b-button @click="goSearch" variant="outline-white"
+                >Cari Buku</b-button
+              >
             </b-input-group-append>
           </b-input-group>
         </div>
@@ -17,46 +20,82 @@
       <div class="card col-12 p-0">
         <h2 class="text-dark pl-4 mt-4">Daftar Pencarian Buku</h2>
         <div class="home-carousel">
-          <glide-component :settings="glideBookOption">
-            <div
-              class="card"
-              v-for="(f, index) in bookContent"
-              :key="`bookContent_${index}`"
-              @click="itemAction(f)"
+          <b-card>
+            <b-row>
+              <b-card-group
+                class="col-md-3"
+                v-for="(content, index) in contents"
+                :key="index"
+              >
+                <b-card>
+                  <div class="image-container">
+                    <b-card-img
+                      :src="content.imgSrc"
+                      alt="Image"
+                      class="image"
+                      top
+                    ></b-card-img>
+                  </div>
+                  <p class="card-text text-truncate">
+                    {{ content.title }}
+                  </p>
+                  <p class="card-text">
+                    {{ content.publisher_name }}
+                  </p>
+                  <div slot="footer">
+                    <b-btn @click="itemAction(content)" variant="primary" block>Detail</b-btn>
+                  </div>
+                </b-card>
+              </b-card-group>
+            </b-row>
+            <b-pagination-nav
+              class="mt-5"
+              size="lg"
+              align="center"
+              :number-of-pages="totalPages"
+              :link-gen="linkGen"
+              @input="changePage(curerntPage)"
+              v-model="curerntPage"
+              :per-page="5"
             >
-              <b-card class="flex-row" no-body>
-                <div class="w-100 position-relative">
-                  <img
-                    class="card-img"
-                    style="max-height: 210px"
-                    :src="f.imgSrc"
-                    alt="Card cap"
-                  />
-                </div>
-              </b-card>
-            </div>
-          </glide-component>
+              <template v-slot:next-text>
+                <i class="simple-icon-arrow-right" />
+              </template>
+              <template v-slot:prev-text>
+                <i class="simple-icon-arrow-left" />
+              </template>
+              <template v-slot:first-text>
+                <i class="simple-icon-control-start" />
+              </template>
+              <template v-slot:last-text>
+                <i class="simple-icon-control-end" />
+              </template>
+            </b-pagination-nav>
+          </b-card>
         </div>
       </div>
     </div>
-
-    
   </b-body>
 </template>
 
 <script>
 import GlideComponent from "@/components/Carousel/GlideComponent";
 import ImageList from "@/components/Customs/ImageList";
-import _ from 'lodash'
+import _ from "lodash";
 import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
-import jwtDecode from 'vue-jwt-decode'
+import Loading from "@/components/Customs/Loading";
+
 
 export default {
+  props: {
+    pageSize: { default: 4 },
+  },
   components: {
     "glide-component": GlideComponent,
+    "e-loading": Loading,
     "b-body": Body,
     "e-text": Text,
     "image-list-item": ImageList,
@@ -67,9 +106,9 @@ export default {
       items: [
         {
           id: 1,
-          title: 'asd',
-          img: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/Psikologi_Sosial,_Jilid_2.jpg.jpg&width=200`
-        }
+          title: "asd",
+          img: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/Psikologi_Sosial,_Jilid_2.jpg.jpg&width=200`,
+        },
       ],
       glideBookOption: {
         type: "carousel",
@@ -103,18 +142,48 @@ export default {
           imgSrc: "/assets/img/books/createthumb-6.jfif",
         },
       ],
-      keyword: null
+      keyword: "psikologi",
+      curerntPage: 1,
+      response: {},
     };
   },
   methods: {
+    linkGen(pagenum) {},
+    changePage(pageNum) {
+      setTimeout(() => {
+        this.fetchPage();
+      }, 10);
+    },
+    commonErrorNotif () {
+      return this.$notify(
+        'error', 
+        'Perhatian!', 
+        'Terjadi Kesalahan', 
+        { 
+          duration: 3000, 
+          permanent: false 
+      });
+    },
+    async fetchPage() {
+      try {
+        this.$refs.loading.show()
+        const response = await axios.get(
+          `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`
+        );
+        this.response = _.get(response, "data.data", {});
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      }  finally {
+        this.$refs.loading.hide()
+      }
+    },
     async goBack() {
       this.$router.go({
-        name: 'landing-page',
-      })
+        name: "landing-page",
+      });
     },
-    itemAction (item) {
-      console.log(item)
-      console.log(item.id_book)
+    itemAction(item) {
       this.$router.push({
         name: 'detail-buku',
         params: {
@@ -122,42 +191,32 @@ export default {
         }
       })
     },
-    goSearch () {
+    goSearch() {
       if (!!this.keyword) {
-        // this.$router.go({
-        //   name: 'cari-buku',
-        //   params: {
-        //     keyword: this.keyword
-        //   }
-        // })
-        this.searchBook()
+        this.fetchPage();
       }
     },
-    async searchBook () {
-      let urlEncodedString = encodeURIComponent(this.keyword);
-      try {
-        this.processing = true
-        const response = await axios.get(`${apiBackend}/book?title=${urlEncodedString}&page=1&size=10`);
-        const books = _.get(response, 'data.data.tutorials', [])
-        this.bookContent = []
-        books.forEach(element => {
-          this.bookContent.push({
-            ...element,
-            imgSrc: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${element.image}&width=200`
-          })
-        });
-      } catch (error) {
-        this.$notify('error', 'Peringatan!', 'Terjadi Kesalahan Sistem', { duration: 3000, permanent: false });
-      } finally {
-        this.processing = false
-      }
-    }
   },
   computed: {
+    contents() {
+      const contents = _.get(this.response, "tutorials", []);
+      contents.forEach((content) => {
+        if (!!content.image) {
+          content.imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${content.image}&width=200`;
+        }
+      });
+      return contents;
+    },
+    curerntPages() {
+      return _.get(this.response, "currentPage", 0);
+    },
+    totalPages() {
+      return _.get(this.response, "totalPages", 1);
+    },
   },
   mounted() {
-    this.keyword = this.$route.params.keyword
-    this.searchBook()
+    this.keyword = this.$route.params.keyword;
+    this.fetchPage();
   },
   beforeDestroy() {},
 };

@@ -407,7 +407,8 @@
       background-repeat: no-repeat;
       background-position-y: 0;
       background-color: transparent;
-      height: 1440px;
+      height: -webkit-fill-available;
+      min-height: calc(100vh - 50px);
       margin-bottom: 0;
       padding-top: 0;
       padding-bottom: 0;
