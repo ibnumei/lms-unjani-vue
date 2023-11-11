@@ -1,48 +1,28 @@
 <template>
   <b-body>
-    <b-modal id="modallg" size="lg" title="Large Modal" hide-footer>
-      <v-quagga
-        :onDetected="onBarcodeScanned"
-        :readerSize="readerSize"
-        :readerTypes="detecteds"
-        :patchSize="'medium'"
-      ></v-quagga>
-    </b-modal>
-    <b-card>
-      <h3>Scan buku</h3>
-      <div>{{ result }}</div>
-      <e-scan />
-      <br />
-      <b-button v-b-modal.modallg variant="outline-primary" class="mr-2 mb-2">{{
-          $t('modal.launch-large-modal')
-        }}
-      </b-button>
-      <div class="mt-4 col-12 p-0">
+    <e-loading ref="loading" />
+    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <b-card class="p-5">
+      <div class="d-flex justify-content-center align-items-center">
+        <b-button
+          @click="openScanner"
+          variant="primary"
+          size="lg"
+          :class="{
+            'btn-multiple-state btn-shadow': true,
+          }"
+        >
+          <i class="simple-icon-camera"></i>
+          <span class="label">Scan Buku</span>
+        </b-button>
       </div>
     </b-card>
-    <b-card class="mt-4">
-      <h3>Daftar buku</h3>
-      <b-table hover :items="items" />
-      <div class="mt-4 col-12 p-0">
-        <div class="">
-          <b-form class="av-tooltip tooltip-label-bottom">
-            <div class="d-flex justify-content-end align-items-center">
-              <b-button
-                @click="goBack"
-                variant="primary"
-                size="lg"
-                :class="{
-                  'btn-multiple-state btn-shadow': true,
-                }"
-              >
-                <span class="label">Kembali</span>
-              </b-button>
-            </div>
-          </b-form>
-        </div>
-      </div>
-    </b-card>
-    
+    <e-books-table
+      class="mt-4"
+      v-model="items"
+      :show-action="false"
+      @submit-data="submitReturnBook"
+    />
   </b-body>
 </template>
 
@@ -51,58 +31,126 @@ import _ from 'lodash'
 import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
-import Scanner from "@/components/Customs/Scanner";
 import { apiBackend } from "@/constants/config";
-import jwtDecode from 'vue-jwt-decode'
+import Loading from "@/components/Customs/Loading";
+import { mapGetters } from 'vuex';
+import ModalScanner from './Components/ModalScanner.vue'
+import BooksTable from './Components/BooksTable.vue'
 
 export default {
   components: {
+    "e-loading": Loading,
     "b-body": Body,
     "e-text": Text,
-    "e-scan": Scanner
+    'e-scanner': ModalScanner,
+    'e-books-table': BooksTable
   },
   data() {
     return {
-      items: [
-        { id: 1, first_name: 'Mark', last_name: 'Otto', username: '@mdo' },
-        { id: 2, first_name: 'Jacob', last_name: 'Thornton', username: '@fat' },
-        { id: 3, first_name: 'Lary', last_name: 'the Bird', username: '@twitter' }
-      ],
-      readerSize: {
-        width: 640,
-        height: 480,
-      },
-      detecteds: [
-        "code_128_reader",
-        "ean_reader",
-        "ean_8_reader",
-        "code_39_reader",
-        "code_39_vin_reader",
-        "codabar_reader",
-        "upc_reader",
-        "upc_e_reader",
-        "i2of5_reader",
-        "2of5_reader",
-        "code_93_reader",
-      ],
-      result: "",
-      format: "",
+      qrCodeContent: null,
+      items: [],
     };
   },
   methods: {
+    commonErrorNotif () {
+      return this.$notify(
+        'error', 
+        'Perhatian!', 
+        'Terjadi Kesalahan', 
+        { 
+          duration: 3000, 
+          permanent: false 
+      });
+    },
+    async submitReturnBook () {
+      try {
+        this.$refs.loading.show()
+
+        console.log(this.qrCodeContent)
+        const headers = {
+          token: _.get(this.currentUser, 'token')
+        }
+        const payload = {
+          kode_pinjam: this.qrCodeContent
+        }
+        const response = await axios.put(`${apiBackend}/rent-book`, payload, { headers });
+        const data = _.get(response, 'data.data')
+        console.log(data)
+        if (!!data) {
+          this.$notify(
+            'success', 
+            'Notifikasi!', 
+            'Buku Berhasil Dikembalikan', 
+            { 
+              duration: 3000, 
+              permanent: false 
+          });
+          this.goBack()
+        }
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      } finally {
+        this.$refs.loading.hide()
+      }
+    },
+    handleQrScan(result) {
+      try {
+        const payload = result;
+
+        if (!!payload && (payload !== this.qrCodeContent)) {
+          this.searchRentBook(payload)
+          this.$refs.modalScanner.stopQrScanner()
+          this.$refs.modalScanner.closeScanner()
+        }
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      }
+    },
+    openScanner () {
+      this.$refs.modalScanner.openScanner()
+    },
     async goBack() {
       this.$router.push({
         name: 'landing-page',
       })
     },
-    onBarcodeScanned(barcode) {
-      console.log("detected", barcode);
-      this.result = barcode.codeResult.code;
-      this.format = barcode.codeResult.format;
-      // do something...
+    async searchRentBook (payload) {
+      try {
+        this.$refs.loading.show()
+        const headers = {
+          token: _.get(this.currentUser, 'token')
+        }
+        const response = await axios.get(`${apiBackend}/search-return-book/${payload}`, { headers });
+        const data = _.get(response, 'data.data', [])
+        const success = _.get(response, 'data.success')
+        if (!success) {
+          this.qrCodeContent = null
+          return this.$notify(
+          'error', 
+          'Peringatan!', 
+          _.get(response, 'data.message', 'Terjadi Kesalahan'), 
+          { 
+            duration: 3000, 
+            permanent: false 
+          });
+        }
+        data.forEach((element) => {
+          element.item_code = _.get(element, 'items[0].item_code')
+          element.inventory_code = _.get(element, 'items[0].inventory_code')
+        });
+        this.items = data
+      } catch (error) {
+        this.commonErrorNotif()
+        console.log(error)
+      } finally {
+        this.$refs.loading.hide()
+      }
     },
   },
   computed: {
+    ...mapGetters(['currentUser']),
     path () {
       return this.$route.params.path
     }
@@ -113,8 +161,33 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.qr-scan {
+  max-width: 100%;
+}
+.qr-scanner {
+  max-width: 100%;
+}
 .custom-rounded {
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
+}
+.qrcode {
+  display: inline-block;
+  font-size: 0;
+  margin-bottom: 0;
+  position: relative;
+}
+.qrcode__image {
+  background-color: #fff;
+  border: 0.25rem solid #fff;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+  height: 15%;
+  left: 50%;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 15%;
 }
 </style>
