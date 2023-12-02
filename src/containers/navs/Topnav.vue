@@ -15,7 +15,7 @@
       >
         <mobile-menu-icon />
       </a>
-      <div
+      <!-- <div
         :class="{'search':true, 'mobile-view':isMobileSearch}"
         ref="searchContainer"
         @mouseenter="isSearchOver=true"
@@ -29,8 +29,8 @@
         <span class="search-icon" @click="searchClick">
           <i class="simple-icon-magnifier"></i>
         </span>
-      </div>
-      <div class="d-inline-block">
+      </div> -->
+      <!-- <div class="d-inline-block">
         <b-dropdown
           id="langddm"
           class="ml-2"
@@ -47,14 +47,14 @@
             @click="changeLocale(l.id, l.direction)"
           >{{l.name}}</b-dropdown-item>
         </b-dropdown>
-      </div>
-      <div class="position-relative d-none d-none d-lg-inline-block">
+      </div> -->
+      <!-- <div class="position-relative d-none d-none d-lg-inline-block">
         <a
           class="btn btn-outline-primary btn-sm ml-2"
           target="_top"
           :href="buyUrl"
         >{{$t('user.buy')}}</a>
-      </div>
+      </div> -->
     </div>
     <router-link class="navbar-logo" :to="adminRoot">
       <span class="logo d-none d-xs-block"></span>
@@ -62,7 +62,7 @@
     </router-link>
 
     <div class="navbar-right">
-      <div class="d-none d-md-inline-block align-middle mr-3">
+      <!-- <div class="d-none d-md-inline-block align-middle mr-3">
         <switches
           id="tool-mode-switch"
           v-model="isDarkActive"
@@ -71,8 +71,8 @@
           color="primary"
         />
         <b-tooltip target="tool-mode-switch" placement="left" title="Dark Mode"></b-tooltip>
-      </div>
-      <div class="header-icons d-inline-block align-middle">
+      </div> -->
+      <!-- <div class="header-icons d-inline-block align-middle">
         <div class="position-relative d-none d-sm-inline-block">
           <b-dropdown
             variant="empty"
@@ -159,7 +159,7 @@
             </b-button>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="user d-inline-block">
         <b-dropdown
           class="dropdown-menu-right"
