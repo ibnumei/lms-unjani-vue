@@ -1,5 +1,6 @@
 <template>
   <div>
+    <e-loading ref="loading" />
     <b-row>
         <b-colxx xxs="12">
             <piaf-breadcrumb :heading="$t('menu.account')" />
@@ -65,13 +66,18 @@
 </template>
 
 <script>
+import _ from 'lodash';
+import axios from 'axios';
 import Text from "@/components/Customs/Text";
 import { mapGetters, mapMutations } from 'vuex';
 import { setCurrentUser } from '@/utils'
+import Loading from "@/components/Customs/Loading";
+import { apiBackend } from "@/constants/config";
 
 export default {
   components: {
     "e-text": Text,
+    "e-loading": Loading,
   },
   data () {
     return {
@@ -96,16 +102,54 @@ export default {
       this.form.email = email
       this.form.phone = phone
     },
-    formSubmit () {
-      const newCurrentUser = {
-        ...this.currentUser,
-        fullname: this.form.fullname,
-        username: this.form.username ,
-        email: this.form.email,
-        phone: this.form.phone,
+    async formSubmit () {
+      try {
+        this.$refs.loading.show()
+        const headers = {
+          token: _.get(this.currentUser, 'token')
+        }
+        const response = await axios.put(`${apiBackend}/user-admin`, this.form, { headers });
+        const success = _.get(response, 'data.success');
+        if (!success) {
+          return this.$notify(
+            'error', 
+            'Perhatian!', 
+            'Terjadi Kesalahan', 
+            { 
+              duration: 3000, 
+              permanent: false 
+          });
+        }
+        this.$notify(
+          'success', 
+          'Notifikasi!', 
+          'Buku Berhasil Ditambah', 
+          { 
+            duration: 3000, 
+            permanent: false 
+        });
+        const newCurrentUser = {
+          ...this.currentUser,
+          fullname: this.form.fullname,
+          username: this.form.username ,
+          email: this.form.email,
+          phone: this.form.phone,
+        }
+        setCurrentUser(newCurrentUser)
+        this.setUser(newCurrentUser)
+      } catch (error) {
+        console.log(error)
+        return this.$notify(
+          'error', 
+          'Perhatian!', 
+          'Terjadi Kesalahan', 
+          { 
+            duration: 3000, 
+            permanent: false 
+        });
+      } finally {
+        this.$refs.loading.hide()
       }
-      setCurrentUser(newCurrentUser)
-      this.setUser(newCurrentUser)
     }
   },
   mounted () {
