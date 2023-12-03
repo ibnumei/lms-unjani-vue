@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 <footer class="page-footer">
     <div class="footer-content">
         <div class="container-fluid">
@@ -18,14 +18,14 @@
                             <a href="#" class="btn-link">Docs</a>
                         </li>
                     </ul>
-                </div>
+                </div> 
             </div>
         </div>
     </div>
 </footer>
-</template>
-<script>
+</template> -->
+<!-- <script>
 export default {
 
 }
-</script>
+</script> -->

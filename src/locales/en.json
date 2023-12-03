@@ -118,7 +118,10 @@
     "second-menu": "Second Menu",
     "second": "Second",
     "start": "Start",
-    "single": "Single"
+    "single": "Single",
+    "master-member": "Master Member",
+    "master-book": "Master Book",
+    "master-rent": "Master Peminjaman"
   },
   "dashboards": {
     "pending-orders": "Pending Orders",

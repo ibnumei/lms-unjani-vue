@@ -394,6 +394,24 @@ const data = [{
   to: `${adminRoot}/blank-page`
 },
 {
+  id: "master-member",
+  icon: "iconsminds-bucket",
+  label: "menu.master-member",
+  to: `${adminRoot}/master-member`
+},
+{
+  id: "master-book",
+  icon: "iconsminds-bucket",
+  label: "menu.master-book",
+  to: `${adminRoot}/master-book`
+},
+{
+  id: "master-rent",
+  icon: "iconsminds-bucket",
+  label: "menu.master-rent",
+  to: `${adminRoot}/master-rent`
+},
+{
   id: "docs",
   icon: "iconsminds-library",
   label: "menu.docs",
