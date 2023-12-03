@@ -83,6 +83,11 @@ const requiredMixin = {
   },
   created () {
     this.fSplitColumns()
+  },
+  watch: {
+    value (n, o) {
+      this.d_value = n
+    }
   }
 }
 

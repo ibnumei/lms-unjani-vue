@@ -94,6 +94,20 @@ const routes = [
         path: "settings",
         component: () =>
           import(/* webpackChunkName: "dashboards" */ "./views/app/settings"),
+          children: [
+            {
+              path: "account",
+              component: () =>
+                import(/* webpackChunkName: "dashboards" */ "./views/app/settings/Account"),
+              // meta: { roles: [UserRole.Admin] },
+            },
+            {
+              path: "api",
+              component: () =>
+                import(/* webpackChunkName: "dashboards" */ "./views/app/settings/Api"),
+              // meta: { roles: [UserRole.Admin] },
+            },
+          ]
       },
       {
         path: "pages",

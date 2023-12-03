@@ -35,12 +35,12 @@ const data = [
       {
         icon: "iconsminds-id-card",
         label: "menu.account",
-        to: `${adminRoot}/menu/levels/third-level-1`
+        to: `${adminRoot}/settings/account`
       },
       {
         icon: "iconsminds-security-settings",
         label: "menu.api",
-        to: `${adminRoot}/menu/levels/third-level-2`
+        to: `${adminRoot}/settings/api`
       }
     ]
   },
