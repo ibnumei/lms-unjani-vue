@@ -59,8 +59,8 @@ const routes = [
       {
         path: "dashboards",
         component: () =>
-          import(/* webpackChunkName: "dashboards" */ "./views/app/dashboards"),
-        redirect: `${adminRoot}/dashboards/default`,
+          import(/* webpackChunkName: "dashboards" */ "./views/app/dashboards/Default"),
+        // redirect: `${adminRoot}/dashboards/default`,
         // meta: { roles: [UserRole.Admin, UserRole.Editor] },
         children: [
           {
@@ -89,6 +89,11 @@ const routes = [
             // meta: { roles: [UserRole.Editor] },
           }
         ]
+      },
+      {
+        path: "settings",
+        component: () =>
+          import(/* webpackChunkName: "dashboards" */ "./views/app/settings"),
       },
       {
         path: "pages",

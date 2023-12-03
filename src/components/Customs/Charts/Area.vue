@@ -104,7 +104,6 @@ export default {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
     init() {
-      console.log('init')
       if (this.shadow) {
         Chart.defaults.lineWithShadow = Chart.defaults.line;
         Chart.controllers.lineWithShadow = Chart.controllers.line.extend({
@@ -136,8 +135,6 @@ export default {
       !!this.data && (this.areaChartData.datasets[0].data = this.data);
 
       const ctx = this.$refs[this.refCanvas];
-      console.log(this.labels);
-      console.log(this.data);
       const myChart = new Chart(ctx, {
         type: this.shadow ? "lineWithShadow" : "line",
         data: this.areaChartData,
