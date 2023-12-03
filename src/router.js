@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import AuthGuard from "./utils/auth.guard";
 import { adminRoot } from "./constants/config";
 import { UserRole } from "./utils/auth.roles";
+import AdminGuard from "./utils/admin.guard"
+import LoginGuard from "./utils/login.guard"
 
 Vue.use(VueRouter);
 
@@ -51,6 +53,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/dashboards`,
     meta: { loginRequired: true },
+    beforeEnter: AdminGuard,
     /*
     define with Authorization :
     meta: { loginRequired: true, roles: [UserRole.Admin, UserRole.Editor] },
@@ -479,6 +482,7 @@ const routes = [
     path: "/user",
     component: () => import(/* webpackChunkName: "user" */ "./views/user"),
     redirect: "/user/login",
+    beforeEnter: LoginGuard,
     children: [
       {
         path: "login",
