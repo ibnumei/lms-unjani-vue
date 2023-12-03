@@ -25,10 +25,19 @@
           v-model="form.email"
         />
         <e-text
-          label="Password"
-          disabled
-          type="text"
-          v-model="form.password"
+          label="Password Lama"
+          type="password"
+          v-model="form.oldPassword"
+        />
+        <e-text
+          label="Password Baru"
+          type="password"
+          v-model="form.newPassword"
+        />
+        <e-text
+          label="Konfirmasi Password"
+          type="password"
+          v-model="form.confirmPassword"
         />
         <e-text
           label="Phone"
@@ -85,7 +94,9 @@ export default {
         fullname: null,
         username: null,
         email: null,
-        password: null,
+        oldPassword: null,
+        newPassword: null,
+        confirmPassword: null,
         phone: null
       }
     }
@@ -123,7 +134,7 @@ export default {
         this.$notify(
           'success', 
           'Notifikasi!', 
-          'Buku Berhasil Ditambah', 
+          'Informasi Akun Berhasil Diubah', 
           { 
             duration: 3000, 
             permanent: false 
@@ -138,11 +149,10 @@ export default {
         setCurrentUser(newCurrentUser)
         this.setUser(newCurrentUser)
       } catch (error) {
-        console.log(error)
         return this.$notify(
           'error', 
           'Perhatian!', 
-          'Terjadi Kesalahan', 
+          _.get(error, 'response.data.message', 'Terjadi Kesalahan'), 
           { 
             duration: 3000, 
             permanent: false 

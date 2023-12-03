@@ -482,12 +482,19 @@ const routes = [
     path: "/user",
     component: () => import(/* webpackChunkName: "user" */ "./views/user"),
     redirect: "/user/login",
-    beforeEnter: LoginGuard,
     children: [
       {
         path: "login",
+        name: "admin-login",
+        beforeEnter: LoginGuard,
         component: () =>
           import(/* webpackChunkName: "user" */ "./views/user/Login")
+      },
+      {
+        path: "logout",
+        name: "admin-logout",
+        component: () =>
+          import(/* webpackChunkName: "user" */ "./views/user/Logout")
       },
       {
         path: "register",

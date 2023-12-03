@@ -54,7 +54,7 @@ const data = [
     id: "logout",
     icon: "simple-icon-logout",
     label: "menu.logout",
-    to: `${adminRoot}/dashboards`
+    to: '/user/logout'
   },
   // {
   //   id: "master-member",
