@@ -3,11 +3,11 @@
     <b-colxx xxs="12" md="10" class="mx-auto my-auto">
         <b-card class="auth-card" no-body>
             <div class="position-relative image-side">
-                <p class="text-white h2">{{ $t('dashboards.magic-is-in-the-details') }}</p>
+                <p class="text-white h2">
+                  Selamat Datang Di LMS UNJANI
+                </p>
                 <p class="white mb-0">
-                    Please use your credentials to login.
-                    <br />If you are not a member, please
-                    <router-link to="/user/register" class="white">register</router-link>.
+                    Silahkan login menggunakan akun anda.
                 </p>
             </div>
             <div class="form-side">
@@ -17,11 +17,8 @@
                 <h6 class="mb-4">{{ $t('user.login-title')}}</h6>
 
                 <b-form @submit.prevent="formSubmit" class="av-tooltip tooltip-label-bottom">
-                    <b-form-group :label="$t('user.email')" class="has-float-label mb-4">
-                        <b-form-input type="text" v-model="$v.form.email.$model" :state="!$v.form.email.$error" />
-                        <b-form-invalid-feedback v-if="!$v.form.email.required">Please enter your email address</b-form-invalid-feedback>
-                        <b-form-invalid-feedback v-else-if="!$v.form.email.email">Please enter a valid email address</b-form-invalid-feedback>
-                        <b-form-invalid-feedback v-else-if="!$v.form.email.minLength">Your email must be minimum 4 characters</b-form-invalid-feedback>
+                    <b-form-group :label="$t('user.username')" class="has-float-label mb-4">
+                        <b-form-input type="text" v-model="$v.form.username.$model" />
                     </b-form-group>
 
                     <b-form-group :label="$t('user.password')" class="has-float-label mb-4">
@@ -30,7 +27,6 @@
                         <b-form-invalid-feedback v-else-if="!$v.form.password.minLength || !$v.form.password.maxLength">Your password must be between 4 and 16 characters</b-form-invalid-feedback>
                     </b-form-group>
                     <div class="d-flex justify-content-between align-items-center">
-                        <router-link to="/user/forgot-password">{{ $t('user.forgot-password-question')}}</router-link>
                         <b-button type="submit" variant="primary" size="lg" :disabled="processing" :class="{'btn-multiple-state btn-shadow': true,
                     'show-spinner': processing,
                     'show-success': !processing && loginError===false,
@@ -68,16 +64,15 @@ import { adminRoot } from '../../constants/config';
 const {
     required,
     maxLength,
-    minLength,
-    email
+    minLength
 } = require("vuelidate/lib/validators");
 
 export default {
     data() {
         return {
             form: {
-                email: "test@coloredstrategies.com",
-                password: "xxxxxx"
+                username: null,
+                password: null
             },
         };
     },
@@ -86,13 +81,9 @@ export default {
         form: {
             password: {
                 required,
-                maxLength: maxLength(16),
-                minLength: minLength(4)
             },
-            email: {
+            username: {
                 required,
-                email,
-                minLength: minLength(4)
             }
         }
     },
@@ -103,12 +94,10 @@ export default {
         ...mapActions(["login"]),
         formSubmit() {
             this.$v.$touch();
-            this.form.email = "piaf-vue@coloredstrategies.com";
-            this.form.password = "piaf123";
             this.$v.form.$touch();
            // if (!this.$v.form.$anyError) {
                 this.login({
-                    email: this.form.email,
+                    username: this.form.username,
                     password: this.form.password
                 });
             //}
@@ -116,7 +105,7 @@ export default {
     },
     watch: {
         currentUser(val) {
-            if (val && val.uid && val.uid.length > 0) {
+            if (val && val.type === 'ADMIN') {
                 setTimeout(() => {
                     this.$router.push(adminRoot);
                 }, 200);
