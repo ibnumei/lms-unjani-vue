@@ -14,7 +14,7 @@
           :id="id"
           :maxlength="maxlength"
           :minlength="minlength"
-          :disabled="d_disabled"
+          :disabled="disabled"
           :state="fState"
           v-model="d_value"
           :text="d_value"
@@ -40,6 +40,14 @@
 <script>
 import commonInputMixin from "@/mixins/commonInputMixin";
 export default {
-  mixins: [commonInputMixin]
+  mixins: [commonInputMixin],
+  props:{
+    disabled: { type: Boolean, default: false }
+  }
 };
 </script>
+<style scoped>
+:disabled {
+  background-color: #e9ecef;
+}
+</style>
