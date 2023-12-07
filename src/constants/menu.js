@@ -12,13 +12,13 @@ const data = [
     id: "daftar-member",
     icon: "iconsminds-network",
     label: "menu.daftar-member",
-    to: `${adminRoot}/dashboards`
+    to: `${adminRoot}/master-member`
   },
   {
     id: "daftar-transaksi",
     icon: "iconsminds-big-data",
     label: "menu.daftar-transaksi",
-    to: `${adminRoot}/dashboards`
+    to: `${adminRoot}/master-rent`
   },
   {
     id: "bebas-pustaka",

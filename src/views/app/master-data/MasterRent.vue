@@ -31,17 +31,25 @@
               </b-colxx>
               <b-colxx sm="4">
                 <b-form-group label="Tanggal Pinjam">
-                  <b-form-input v-model="filters[4].value" />
+                  <datepicker
+                    :bootstrap-styling="true"
+                    v-model="filters[4].value"
+                    mode="single"
+                  ></datepicker>
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="4">
                 <b-form-group label="Tanggal Kembali">
-                  <b-form-input v-model="filters[5].value" />
+                  <datepicker
+                    :bootstrap-styling="true"
+                    v-model="filters[5].value"
+                    mode="single"
+                  ></datepicker>
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="4">
                 <b-form-group label="Status Pinjam">
-                  <b-form-input v-model="filters[6].value" />
+                  <b-form-select v-model="filters[6].value" :options="optionsStatus"></b-form-select>
                 </b-form-group>
               </b-colxx>
               <b-colxx sm="4">
@@ -76,7 +84,7 @@
     </b-row>
     <e-paging-server
       ref="tblPagingBook"
-      title="List Data Peminjaman Buku" class="mt-2"
+      title="List Transaksi" class="mt-2"
       picker="pagingRentList"
       :perPage=25
       search=""
@@ -87,9 +95,12 @@
 </template>
 <script>
 import pagingServer from '@/components/Customs/PagingServer'
+import Datepicker from "vuejs-datepicker";
+
 export default {
   components: {
-    'e-paging-server': pagingServer
+    'e-paging-server': pagingServer,
+    datepicker: Datepicker
   },
   data () {
     return {
@@ -98,12 +109,19 @@ export default {
         { id: 'member_name', value: '', opr: 'LIKE', type: 'STRING' },
         { id: 'title', value: '', opr: 'LIKE', type: 'STRING' },
         { id: 'inventory_code', value: '', opr: 'LIKE', type: 'STRING' },
-        { id: 'tgl_pinjam', value: '', opr: 'LIKE', type: 'STRING' },
-        { id: 'tgl_kembali', value: '', opr: 'LIKE', type: 'STRING' },
+        { id: 'tgl_pinjam', value: '', opr: 'EQUAL', type: 'DATE' },
+        { id: 'tgl_kembali', value: '', opr: 'EQUAL', type: 'DATE' },
         { id: 'status_pinjam', value: '', opr: 'LIKE', type: 'STRING' },
         { id: 'location_order', value: '', opr: 'LIKE', type: 'STRING' }
-      ]
+      ],
+      optionsStatus: [
+          { value: 1, text: 'Aktif' },
+          { value: 0, text: 'Done' }
+        ]
     }
+  },
+  mounted () {
+
   },
   methods: {
     searchData () {

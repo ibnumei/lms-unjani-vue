@@ -39,7 +39,6 @@
           title="Daftar Pemimjam Terbaru"
           class="mt-2"
           picker="pagingLatestRent"
-          perPage="10"
           search=""
           sortDesc
           :filters="[]"
