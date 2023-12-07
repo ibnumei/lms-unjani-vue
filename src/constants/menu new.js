@@ -4,57 +4,45 @@ import { UserRole } from "../utils/auth.roles";
 const data = [
   {
     id: "dashboards",
-    icon: "iconsminds-dashboard",
+    icon: "iconsminds-shop-4",
     label: "menu.dashboards",
     to: `${adminRoot}/dashboards`
   },
   {
     id: "daftar-member",
-    icon: "iconsminds-network",
+    icon: "iconsminds-shop-4",
     label: "menu.daftar-member",
     to: `${adminRoot}/dashboards`
   },
   {
     id: "daftar-transaksi",
-    icon: "iconsminds-big-data",
+    icon: "iconsminds-shop-4",
     label: "menu.daftar-transaksi",
     to: `${adminRoot}/dashboards`
   },
   {
     id: "bebas-pustaka",
-    icon: "iconsminds-library",
+    icon: "iconsminds-shop-4",
     label: "menu.bebas-pustaka",
     to: `${adminRoot}/dashboards`
   },
   {
     id: "settings",
-    icon: "simple-icon-settings",
+    icon: "iconsminds-shop-4",
     label: "menu.settings",
-    to: `${adminRoot}/settings`,
-    subs: [
-      {
-        icon: "iconsminds-id-card",
-        label: "menu.account",
-        to: `${adminRoot}/settings/account`
-      },
-      {
-        icon: "iconsminds-security-settings",
-        label: "menu.api",
-        to: `${adminRoot}/settings/api`
-      }
-    ]
+    to: `${adminRoot}/dashboards`
   },
   {
     id: "laporan",
-    icon: "iconsminds-printer",
+    icon: "iconsminds-shop-4",
     label: "menu.laporan",
     to: `${adminRoot}/dashboards`
   },
   {
     id: "logout",
-    icon: "simple-icon-logout",
+    icon: "iconsminds-shop-4",
     label: "menu.logout",
-    to: '/user/logout'
+    to: `${adminRoot}/dashboards`
   },
   // {
   //   id: "master-member",

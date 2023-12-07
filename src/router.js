@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import AuthGuard from "./utils/auth.guard";
 import { adminRoot } from "./constants/config";
 import { UserRole } from "./utils/auth.roles";
+import AdminGuard from "./utils/admin.guard"
+import LoginGuard from "./utils/login.guard"
 
 Vue.use(VueRouter);
 
@@ -51,6 +53,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "app" */ "./views/app"),
     redirect: `${adminRoot}/dashboards`,
     meta: { loginRequired: true },
+    beforeEnter: AdminGuard,
     /*
     define with Authorization :
     meta: { loginRequired: true, roles: [UserRole.Admin, UserRole.Editor] },
@@ -59,8 +62,8 @@ const routes = [
       {
         path: "dashboards",
         component: () =>
-          import(/* webpackChunkName: "dashboards" */ "./views/app/dashboards"),
-        redirect: `${adminRoot}/dashboards/default`,
+          import(/* webpackChunkName: "dashboards" */ "./views/app/dashboards/Default"),
+        // redirect: `${adminRoot}/dashboards/default`,
         // meta: { roles: [UserRole.Admin, UserRole.Editor] },
         children: [
           {
@@ -89,6 +92,25 @@ const routes = [
             // meta: { roles: [UserRole.Editor] },
           }
         ]
+      },
+      {
+        path: "settings",
+        component: () =>
+          import(/* webpackChunkName: "dashboards" */ "./views/app/settings"),
+          children: [
+            {
+              path: "account",
+              component: () =>
+                import(/* webpackChunkName: "dashboards" */ "./views/app/settings/Account"),
+              // meta: { roles: [UserRole.Admin] },
+            },
+            {
+              path: "api",
+              component: () =>
+                import(/* webpackChunkName: "dashboards" */ "./views/app/settings/Api"),
+              // meta: { roles: [UserRole.Admin] },
+            },
+          ]
       },
       {
         path: "pages",
@@ -463,8 +485,16 @@ const routes = [
     children: [
       {
         path: "login",
+        name: "admin-login",
+        beforeEnter: LoginGuard,
         component: () =>
           import(/* webpackChunkName: "user" */ "./views/user/Login")
+      },
+      {
+        path: "logout",
+        name: "admin-logout",
+        component: () =>
+          import(/* webpackChunkName: "user" */ "./views/user/Logout")
       },
       {
         path: "register",
