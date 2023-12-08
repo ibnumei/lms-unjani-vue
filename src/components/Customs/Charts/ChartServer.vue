@@ -4,6 +4,7 @@
       :is="componentName"
       :data="data"
       :labels="labels"
+      :rawData="rawData"
       ref="charts"
     />
   </div>
@@ -12,8 +13,8 @@
 <script>
 import _ from "lodash";
 import axios from "axios";
-import Area from "@/components/Customs/Charts/Area";
-import Bar from "@/components/Customs/Charts/Bar";
+import Area from "@/components/Customs/Charts/ChartArea";
+import Bar from "@/components/Customs/Charts/ChartBar";
 import { apiBackend } from "@/constants/config";
 import FormTool from "@/components/Customs/FormTool";
 
@@ -37,7 +38,8 @@ export default {
     return {
       labels: [],
       data: [],
-      currentComponent: 'area'
+      currentComponent: 'area',
+      rawData: []
     };
   },
   components: {
@@ -54,6 +56,7 @@ export default {
           picker: this.picker,
         });
         const rawData = _.get(response, "data.rows", []);
+        this.rawData = rawData;
         const labels = [];
         const data = [];
         rawData.forEach((element) => {
