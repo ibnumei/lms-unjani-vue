@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import { Line as LineChartGenerator } from 'vue-chartjs/legacy'
 
 export default {
@@ -58,6 +59,14 @@ export default {
       type: Array,
       default: []
     },
+    rawData: {
+      type: Array,
+      default: []
+    },
+    useRaw: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -65,18 +74,48 @@ export default {
         labels: [
           'January',
           'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July'
         ],
         datasets: [
-          {
-            label: 'Peminjaman',
-            backgroundColor: '#f87979',
-            data: [40, 39, 10, 40, 39, 80, 40]
-          }
+          [
+    {
+        "id": "y",
+        "label": "Peminjaman",
+        "backgroundColor": "#a09978",
+        "data": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            2,
+            4,
+            2,
+            0
+        ]
+    },
+    {
+        "id": "y1",
+        "label": "Pengembalian",
+        "backgroundColor": "#327faf",
+        "data": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            4,
+            0
+        ]
+    }
+]
         ]
       },
       chartOptions: {
@@ -96,6 +135,43 @@ export default {
   },
   methods: {
     init () {
+      if (this.useRaw) {
+        console.log(this.rawData)
+        let labels = []
+        let labelsDs = []
+        let datasets = []
+        this.rawData.forEach((item) => {
+          const itemLabels = _.get(item, 'labels', '');
+          const splittedLabels = itemLabels.split(',')
+          labelsDs = splittedLabels
+
+          for (let key in item) {
+            if (key.includes('y')) {
+              const indexDs = _.findIndex(datasets, { id: key });
+              if (indexDs === -1) {
+                datasets.push({
+                  id: key,
+                  label: 'label',
+                  backgroundColor: '#' + Math.floor(Math.random()*16777215).toString(16),
+                  data: [Number(item[key])]
+                })
+              } else {
+                datasets[indexDs].data.push(Number(item[key]))
+                datasets[indexDs].label = labelsDs[indexDs]
+              }
+            }
+            if (key === 'x') {
+              labels.push(item[key])
+            }
+          }
+        })
+
+        console.log(datasets)
+        this.chartData.labels = labels
+        this.chartData.datasets = datasets
+        return this.$refs.chart.renderChart(this.chartData, this.chartOptions)
+      }
+
       this.chartData.labels = this.labels
       this.chartData.datasets[0].data = this.data
 

@@ -5,7 +5,9 @@
       :data="data"
       :labels="labels"
       :rawData="rawData"
+      :useRaw="useRaw"
       ref="charts"
+      :customLabel="customLabel"
     />
   </div>
 </template>
@@ -15,6 +17,7 @@ import _ from "lodash";
 import axios from "axios";
 import Area from "@/components/Customs/Charts/ChartArea";
 import Bar from "@/components/Customs/Charts/ChartBar";
+import Pie from "@/components/Customs/Charts/ChartPie";
 import { apiBackend } from "@/constants/config";
 import FormTool from "@/components/Customs/FormTool";
 
@@ -33,6 +36,15 @@ export default {
       default: false,
     },
     picker: { type: String, required: true, default: null },
+    filters: { type: Array, required: false, default: () => [] },
+    useRaw: {
+      type: Boolean,
+      default: false,
+    },
+    customLabel: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -44,16 +56,18 @@ export default {
   },
   components: {
     'chart-area': Area,
+    'chart-pie': Pie,
     'chart-bar': Bar
   },
   methods: {
-    async fetchDropdown() {
+    async fetchData() {
       if (!this.picker) {
         return;
       }
       try {
         const response = await axios.post(apiBackend + "/paging/dropdown", {
           picker: this.picker,
+          filters: this.filters
         });
         const rawData = _.get(response, "data.rows", []);
         this.rawData = rawData;
@@ -76,7 +90,7 @@ export default {
     }
   },
   mounted() {
-    this.fetchDropdown();
+    this.fetchData();
   },
 };
 </script>

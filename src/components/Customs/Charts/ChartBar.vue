@@ -62,6 +62,10 @@ export default {
       type: Array,
       default: []
     },
+    customLabel: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -105,29 +109,29 @@ export default {
   },
   methods: {
     init () {
-      console.log('inittt')
-      console.log(this.rawData)
-      this.chartData.labels = ['Buku']
-      const backgroundColor = ['#41B883', '#E46651', '#00D8FF', '#DD1B16']
+      let labels = ['Data']
+      if (!!this.customLabel) {
+        labels[0] = this.customLabel
+      }
+      this.chartData.labels = labels
       const datasets = []
       this.rawData.forEach((item, index) => {
         const data = []
         data.push(item.y)
+        const color = '#' + Math.floor(Math.random()*16777215).toString(16);
         datasets.push({
             label: item.x,
-            backgroundColor: backgroundColor[index],
+            backgroundColor: color,
             data
           })
       })
       this.chartData.datasets = datasets
-      console.log(datasets)
-      // this.chartData.labels = this.labels
-      // this.chartData.datasets[0].data = this.data
 
       this.$refs.chart.renderChart(this.chartData, this.chartOptions)
     }
   },
   mounted() {
+    this.init()
   },
   watch: {
     labels (n, o) {
