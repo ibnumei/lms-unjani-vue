@@ -74,48 +74,18 @@ export default {
         labels: [
           'January',
           'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July'
         ],
         datasets: [
-          [
-    {
-        "id": "y",
-        "label": "Peminjaman",
-        "backgroundColor": "#a09978",
-        "data": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            2,
-            4,
-            2,
-            0
-        ]
-    },
-    {
-        "id": "y1",
-        "label": "Pengembalian",
-        "backgroundColor": "#327faf",
-        "data": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            4,
-            0
-        ]
-    }
-]
+          {
+            label: 'Peminjaman',
+            backgroundColor: '#f87979',
+            data: [40, 39, 10, 40, 39, 80, 40]
+          }
         ]
       },
       chartOptions: {
