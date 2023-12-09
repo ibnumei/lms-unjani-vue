@@ -467,6 +467,11 @@ const routes = [
         path: "master-rent",
         component: () =>
           import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterRent")
+      },
+      {
+        path: "laporan",
+        component: () =>
+          import(/* webpackChunkName: "blank-page" */ "./views/app/dashboards/Laporan")
       }
     ]
   },

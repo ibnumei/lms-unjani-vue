@@ -9,11 +9,6 @@
         <b-card>
           <b-form>
             <b-row>
-              <!-- <b-colxx sm="6">
-                <b-form-group label="Member ID">
-                  <b-form-input v-model="filters[0].value" />
-                </b-form-group>
-              </b-colxx> -->
               <b-colxx sm="6">
                 <b-form-group label="Member Name">
                   <b-form-input v-model="filters[1].value" />

@@ -48,7 +48,7 @@ const data = [
     id: "laporan",
     icon: "iconsminds-printer",
     label: "menu.laporan",
-    to: `${adminRoot}/dashboards`
+    to: `${adminRoot}/Laporan`
   },
   {
     id: "logout",

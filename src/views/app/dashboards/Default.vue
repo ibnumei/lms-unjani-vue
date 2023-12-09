@@ -47,7 +47,7 @@
         </b-card>
       </b-colxx>
 
-      <b-colxx xxs="12">
+      <!-- <b-colxx xxs="12">
         <b-card class="mb-4">
           <b-row>
             <b-colxx xxs="12" lg="8" class="">
@@ -86,9 +86,9 @@
             </b-colxx>
           </b-row>
         </b-card>
-      </b-colxx>
+      </b-colxx> -->
 
-      <b-colxx xxs="12">
+      <!-- <b-colxx xxs="12">
         <b-card class="mb-4">
           <b-row>
             <b-colxx xxs="12" class="mb-4">
@@ -109,7 +109,7 @@
             </b-colxx>
           </b-row>
         </b-card>
-      </b-colxx>
+      </b-colxx> -->
 
       <b-colxx xxs="12">
         <e-paging-server
