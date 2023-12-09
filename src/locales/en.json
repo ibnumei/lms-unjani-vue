@@ -127,9 +127,9 @@
     "api": "API",
     "laporan": "Laporan",
     "logout": "Logout",
-    "master-member": "Master Member",
+    "master-member": "Daftar Member",
     "master-book": "Master Book",
-    "master-rent": "Master Peminjaman"
+    "master-rent": "Daftar Transaksi"
   },
   "dashboards": {
     "pending-orders": "Pending Orders",

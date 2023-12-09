@@ -3,20 +3,40 @@
     <b-card>
       <h1>Login</h1>
       <b-row>
-        <e-text label="Nama" :required="true" v-model="form.nama" />
+        <e-text 
+          label="Nama" 
+          :required="true" 
+          v-model="form.nama" 
+          :disabled="userNeverLogsIn"
+        />
         <e-text
           label="Password"
           type="password"
           :required="true"
           v-model="form.password"
+          :disabled="userNeverLogsIn"
         />
+        <div class="col-12 p-0" v-if="userNeverLogsIn">
+          <e-text
+            label="New Password"
+            type="password"
+            :required="true"
+            v-model="newPassword"
+          />
+          <e-text
+            label="Confirm New Password"
+            type="password"
+            :required="true"
+            v-model="confirmNewPassword"
+          />
+        </div>
       </b-row>
       <div class="col-12 p-0">
         <div class="home-carousel">
           <b-form class="av-tooltip tooltip-label-bottom">
             <div class="d-flex justify-content-end align-items-center">
               <b-button
-                @click="formSubmit"
+                @click="checkLogin"
                 variant="primary"
                 size="lg"
                 :disabled="processing"
@@ -70,7 +90,11 @@ export default {
       form: {
         nama: null,
         password: null,
+        firstLogin: null
       },
+      neverLoggedIn: false,
+      newPassword: null,
+      confirmNewPassword: null
     };
   },
   methods: {
@@ -91,12 +115,41 @@ export default {
         this.$notify('error', 'Peringatan!', 'Nama atau Password Salah', { duration: 3000, permanent: false });
       } finally {
         this.processing = false
+        this.neverLoggedIn = false
+        this.form.firstLogin = null
+        this.newPassword = null
+        this.confirmNewPassword= null
       }
     },
+    async checkLogin() {
+      if (!this.form.nama || !this.form.password) {
+        this.$notify('warning', 'Peringatan!', 'Silahkan Isi Kolom Nama & Password', { duration: 3000, permanent: false });
+        return
+      }
+      const response = await axios.post(`${apiBackend}/check-login`, this.form)
+      const { data } = response.data
+      if (!data.hasLoggedIn  && !this.newPassword && !this.confirmNewPassword)  {
+        this.neverLoggedIn = true
+        this.$notify('warning', 'Peringatan!', 'Anda Terdeteksi Pertama Kali Login, Silahkan Ganti Password', { duration: 3000, permanent: false });
+        return
+      }
+      if (this.neverLoggedIn && (this.newPassword !== this.confirmNewPassword)) {
+        this.$notify('error', 'Peringatan!', 'Password yang dimasukan tidak sama', { duration: 3000, permanent: false });
+        return
+      }
+      if (this.neverLoggedIn) {
+        this.form.newPassword = this.newPassword
+        this.form.firstLogin = true
+      }
+      await this.formSubmit()
+    }
   },
   computed: {
     path () {
       return this.$route.params.path
+    },
+    userNeverLogsIn () {
+      return this.neverLoggedIn
     }
   },
   mounted() {

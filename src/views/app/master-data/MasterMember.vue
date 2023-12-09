@@ -9,11 +9,11 @@
         <b-card>
           <b-form>
             <b-row>
-              <b-colxx sm="6">
+              <!-- <b-colxx sm="6">
                 <b-form-group label="Member ID">
                   <b-form-input v-model="filters[0].value" />
                 </b-form-group>
-              </b-colxx>
+              </b-colxx> -->
               <b-colxx sm="6">
                 <b-form-group label="Member Name">
                   <b-form-input v-model="filters[1].value" />
@@ -46,7 +46,7 @@
     </b-row>
     <e-paging-server
       ref="tblPagingMember"
-      title="List Member Data" class="mt-2"
+      title="List Member" class="mt-2"
       picker="pagingMemberList"
       :perPage=25
       search=""
