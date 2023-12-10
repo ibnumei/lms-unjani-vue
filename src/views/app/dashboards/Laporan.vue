@@ -92,7 +92,7 @@
           <b-card class="mb-4">
             <b-row>
               <b-colxx xxs="12" class="mb-4">
-                <h6 class="card-subtitle">Grafik Peminjaman Dalam Satu Bulan</h6>
+                <h6 class="card-subtitle">Grafik Peminjaman Dalam Satu Tahun</h6>
                 <date-picker
                   type="year"
                   v-model="filterChartRentAndReturn[0].value"
