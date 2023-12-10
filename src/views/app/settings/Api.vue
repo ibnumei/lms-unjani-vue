@@ -16,7 +16,7 @@
             <p>GET https://{link}:port/lms-unjani/member?page=1&size=10</p>
           </b-row>
           <b-card>
-            <json-viewer :value="jsonDataMember"></json-viewer>
+            <json-viewer :value="jsonDataMember" :copyable="true"></json-viewer>
           </b-card>
       </b-card>
     </b-colxx>
@@ -30,7 +30,7 @@
             <p>GET https://{link}:port/lms-unjani/list-transaction?page=1&size=10</p>
           </b-row>
           <b-card>
-            <json-viewer :value="jsonDataTransaction"></json-viewer>
+            <json-viewer :value="jsonDataTransaction" :copyable="true"></json-viewer>
           </b-card>
       </b-card>
     </b-colxx>
@@ -44,7 +44,7 @@
             <p>GET https://{link}:port/lms-unjani/reprot-transaction?year=2023</p>
           </b-row>
           <b-card>
-            <json-viewer :value="jsonReportTransaksi"></json-viewer>
+            <json-viewer :value="jsonReportTransaksi" :copyable="true"></json-viewer>
           </b-card>
       </b-card>
     </b-colxx>

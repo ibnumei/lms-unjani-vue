@@ -72,7 +72,7 @@ export default {
       })
     },
     async submitRent () {
-      if (this.items.length !== 2) {
+      if (this.items.length > 2) {
         return this.$notify(
           'error', 
           'Peringatan!', 
@@ -87,7 +87,9 @@ export default {
 
         const payload = []
         payload.push(_.get(this.items, '[0]items[0]'))
-        payload.push(_.get(this.items, '[1]items[0]'))
+        if(this.items.length > 1) {
+          payload.push(_.get(this.items, '[1]items[0]'))
+        }
         const headers = {
           token: _.get(this.currentUser, 'token')
         }
