@@ -76,7 +76,7 @@ import Text from "@/components/Customs/Text";
 import { apiBackend } from "@/constants/config";
 import jwtDecode from 'vue-jwt-decode'
 import { setCurrentUser } from '@/utils'
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   components: {
@@ -145,6 +145,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['currentUser']),
     path () {
       return this.$route.params.path
     },
@@ -153,12 +154,16 @@ export default {
     }
   },
   mounted() {
-    if (!['peminjaman', 'pengembalian'].includes(this.path)) {
+    if (!['peminjaman', 'pengembalian', 'mahasiswa'].includes(this.path)) {
       this.$router.push({
         name: 'landing-page',
       })
     }
-    localStorage.removeItem('user')
+    if (this.currentUser && this.currentUser.type === 'Member') {
+      this.$router.push({
+        name: this.path,
+      })
+    }
   },
   beforeDestroy() {},
 };
