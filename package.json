@@ -12,7 +12,7 @@
     "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@glidejs/glide": "^3.4.1",
     "axios": "^0.21.1",
-    "bootstrap-vue": "^2.21.2",
+    "bootstrap-vue": "2.0.0-rc.26",
     "chart.js": "2.9.4",
     "core-js": "^3.14.0",
     "firebase": "^8.6.5",

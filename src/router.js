@@ -469,6 +469,11 @@ const routes = [
           import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterRent")
       },
       {
+        path: "bebas-pustaka",
+        component: () =>
+          import(/* webpackChunkName: "blank-page" */ "./views/app/master-data/MasterBebasPustaka")
+      },
+      {
         path: "laporan",
         component: () =>
           import(/* webpackChunkName: "blank-page" */ "./views/app/dashboards/Laporan")

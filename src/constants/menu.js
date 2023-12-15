@@ -24,7 +24,7 @@ const data = [
     id: "bebas-pustaka",
     icon: "iconsminds-library",
     label: "menu.bebas-pustaka",
-    to: `${adminRoot}/dashboards`
+    to: `${adminRoot}/bebas-pustaka`
   },
   {
     id: "settings",
