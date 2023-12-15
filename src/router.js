@@ -24,6 +24,11 @@ const routes = [
     component: () => import("./views/auth"),
   },
   {
+    path: "/logout",
+    name: "member-logout",
+    component: () => import("./views/auth/Logout")
+  },
+  {
     path: "/login/:path",
     name: "login",
     component: () => import("./views/auth"),
@@ -37,6 +42,11 @@ const routes = [
     path: "/pengembalian",
     name: "pengembalian",
     component: () => import("./views/dashboard/Pengembalian.vue"),
+  },
+  {
+    path: "/mahasiswa",
+    name: "mahasiswa",
+    component: () => import("./views/dashboard/Mahasiswa.vue"),
   },
   {
     path: "/buku/cari/:keyword",

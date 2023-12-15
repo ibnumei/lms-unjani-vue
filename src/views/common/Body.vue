@@ -4,13 +4,35 @@
       class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top mt-0"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/">
           <img
             src="../../assets/logos/logo.svg"
             height="60"
             class="d-inline-block align-text-top"
           />
         </a>
+      </div>
+      <div class="navbar-right">
+        <div class="user d-inline-block">
+          <b-dropdown
+            class="dropdown-menu-right"
+            right
+            variant="empty"
+            toggle-class="p-0"
+            menu-class="mt-3"
+            no-caret
+          >
+            <template slot="button-content">
+              <span class="name mr-1 text-white" style="font-size: 20px;">{{memberName}}</span>
+              <span>
+                <img alt="yyyy" src="@/assets/img/user-profile.png" />
+              </span>
+            </template>
+            <b-dropdown-item @click="loginMahasiswa" v-if="!memberName">Login</b-dropdown-item>
+            <b-dropdown-item @click="pageMahasiswa" v-if="!!memberName">Mahasiswa</b-dropdown-item>
+            <b-dropdown-item @click="logoutMahasiswa" v-if="!!memberName">Logout</b-dropdown-item>
+          </b-dropdown>
+        </div>
       </div>
     </nav>
     <home-layout>
@@ -88,6 +110,7 @@
 import { headroom } from "vue-headroom";
 import HomeLayout from "../../layouts/HomeLayout";
 import GlideComponent from "../../components/Carousel/GlideComponent";
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -101,6 +124,29 @@ export default {
     },
     onSlideEnd(slide) {
       this.sliding = false;
+    },
+    logoutMahasiswa () {
+      this.$router.push({ name: 'member-logout' })
+    },
+    loginMahasiswa () {
+      this.$router.push({
+        name: 'login',
+        params: {
+          path: 'mahasiswa'
+        }
+      })
+    },
+    pageMahasiswa () {
+      this.$router.push({ name: 'mahasiswa' })
+    }
+  },
+  computed: {
+    ...mapGetters(['currentUser']),
+    memberName () {
+      if (this.currentUser && this.currentUser.type === 'Member') {
+        return this.currentUser.member_name
+      }
+      return null
     },
   },
   data() {

@@ -159,7 +159,6 @@ export default {
   },
   mounted() {
     this.getImagesFromName();
-    localStorage.removeItem('user')
   },
   beforeDestroy() {},
 };

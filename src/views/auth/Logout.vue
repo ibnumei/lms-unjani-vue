@@ -9,7 +9,7 @@ export default {
     logout () {
       this.setUser(null)
       localStorage.removeItem('user')
-      this.$router.push({ name: 'admin-login' })
+      this.$router.push({ name: 'landing-page' })
     }
   },
   mounted () {
