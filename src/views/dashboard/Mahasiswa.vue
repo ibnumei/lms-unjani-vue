@@ -15,54 +15,72 @@
             :filters="filterMemberRent"
           />
         </b-tab>
-        <b-tab title="Kartu Bebas Pustaka">
-          <div class="mb-3 library-clearance-certificate" ref="pdfContent">
-            <!-- Header -->
-            <div class="header">
-              <img
-                src="/assets/logos/logo.png"
-                alt="University Logo"
-                class="logo"
-              />
-              <div class="university-info">
-                <h2>Universitas Jenderal Achmad Yani</h2>
-                <p>Jalan Ters Jenderal Sudirman Po.Box 148 (belakang RSU Dustira) Cimahi</p>
-                <p>Gedung Poniman Lantai 3</p>
+        <b-tab title="Kartu Bebas Pustaka" @click="fetchBebasPustaka">
+          <div v-if="memberInfo.bebas_pustaka">
+            <div class="mb-3 library-clearance-certificate" ref="pdfContent">
+              <div class="header">
+                <img
+                  src="/assets/logos/logo.png"
+                  alt="University Logo"
+                  class="logo"
+                />
+                <div class="university-info">
+                  <h2>Universitas Jenderal Achmad Yani</h2>
+                  <p>
+                    Jalan Ters Jenderal Sudirman Po.Box 148 (belakang RSU
+                    Dustira) Cimahi
+                  </p>
+                  <p>Gedung Poniman Lantai 3</p>
+                </div>
+                <div class="separator"></div>
               </div>
-              <div class="separator"></div>
+
+              <div class="body">
+                <h3>SURAT KETERANGAN BEBAS PUSTAKA</h3>
+
+                <p>Yang bertanda tangan dibawah ini:</p>
+                <ul>
+                  <li>Nama : {{ memberInfo.member_name }}</li>
+                  <li>NIM : {{ memberInfo.member_id }}</li>
+                  <li>Program Studi : {{ memberInfo.pin }}.</li>
+                </ul>
+
+                <p>
+                  Menerangkan bahwa Mahasiswa tersebut tidak mempunyai pinjaman
+                  pustaka.
+                </p>
+              </div>
+
+              <div class="footer">
+                <div class="signature"></div>
+                <div class="created-date">
+                  <p>Cimahi, {{ getCurrentDate() }}</p>
+                  <p>_______________________</p>
+                  <p>Pengurus Perpustakaan</p>
+                </div>
+              </div>
             </div>
-
-            <!-- Body -->
+            <div class="d-flex justify-content-end align-items-center">
+              <b-button @click="generatePDF"> Download </b-button>
+            </div>
+          </div>
+          <div v-else>
+            <hr />
             <div class="body">
-              <h3>SURAT KETERANGAN BEBAS PUSTAKA</h3>
-              <!-- <p>No. surat: /D.20/LL/UNPAM/ /2022</p> -->
-
-              <p>Yang bertanda tangan dibawah ini:</p>
+              <p>Mahasiswa/i Berikut :</p>
               <ul>
-                <li>Nama : {{currentUser.member_name}}</li>
-                <li>NIM : {{currentUser.member_id}}</li>
-                <li>Program Studi : {{currentUser.pin}}.</li>
+                <li>Nama : {{ memberInfo.member_name }}</li>
+                <li>NIM : {{ memberInfo.member_id }}</li>
+                <li>Program Studi : {{ memberInfo.pin }}.</li>
               </ul>
 
               <p>
-                Menerangkan bahwa Mahasiswa tersebut tidak mempunyai pinjaman
-                pustaka.
+                Tidak terdaftar dalam bebas pustaka.
+                Silahkah periksa kembali daftar peminjaman buku.
+                Jika tidak memiliki tanggungan buku namun halaman ini muncul, Harap Hubungi Pengurus Perpustakaan
               </p>
             </div>
-
-            <!-- Footer -->
-            <div class="footer">
-              <div class="signature">
-              </div>
-              <div class="created-date">
-                <p>Cimahi, {{ getCurrentDate() }}</p>
-                <p>_______________________</p>
-                <p>Pengurus Perpustakaan</p>
-              </div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-end align-items-center">
-            <b-button @click="generatePDF"> Download </b-button>
+            <hr />
           </div>
         </b-tab>
       </b-tabs>
@@ -96,6 +114,12 @@ export default {
           type: "STRING",
         },
       ],
+      memberInfo: {
+        member_name: null,
+        member_id: null,
+        pin: null,
+        bebas_pustaka: null,
+      },
     };
   },
   methods: {
@@ -104,15 +128,42 @@ export default {
     },
     getCurrentDate() {
       const currentDate = new Date();
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return currentDate.toLocaleDateString('id-ID', options);
+      const options = { year: "numeric", month: "long", day: "numeric" };
+      return currentDate.toLocaleDateString("id-ID", options);
     },
     fetchDataRent() {
       this.$refs.pagingMemberRent.fetchData();
     },
+    async fetchBebasPustaka() {
+      for (let key in this.memberInfo) {
+        this.memberInfo[key] = null;
+      }
+      try {
+        // /user/:id
+        this.$refs.loading.show();
+        const headers = {
+          token: _.get(this.currentUser, "token"),
+        };
+        const response = await axios.get(
+          `${apiBackend}/user/${this.currentUser.id}`,
+          { headers }
+        );
+        const data = _.get(response, "data.data", {});
+        this.memberInfo = {
+          member_name: data.member_name,
+          member_id: data.member_id,
+          pin: data.pin,
+          bebas_pustaka: data.bebas_pustaka,
+        };
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.$refs.loading.hide();
+      }
+    },
     generatePDF() {
       const element = this.$refs.pdfContent;
-      const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+      const timestamp = new Date().toISOString().replace(/[-:.]/g, "");
       const options = {
         filename: `kartu_bebas_pustaka_${this.currentUser.member_id}_${timestamp}`, // Set your custom filename here
       };
@@ -142,9 +193,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .library-clearance-certificate {
-  max-width: 600px;
   margin: auto;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .header {
