@@ -177,6 +177,14 @@ export default {
     }
   },
   mounted() {
+    if (!this.currentUser || !this.currentUser.type === 'Member') {
+      this.$router.push({
+        name: 'login',
+        params: {
+          path: this.$route.params.path
+        }
+      })
+    }
   },
   beforeDestroy() {},
 };
