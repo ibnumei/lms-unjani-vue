@@ -28,6 +28,7 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 import { getCurrentLanguage } from './utils'
 import VueQrcode from '@chenfengyuan/vue-qrcode';
+import VueSweetalert2 from 'vue-sweetalert2';
 
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);
@@ -45,6 +46,7 @@ Vue.use(VueScrollTo);
 Vue.use(VueLineClamp, {
   importCss: true
 });
+Vue.use(VueSweetalert2);
 
 Vue.component(VueQrcode.name, VueQrcode);
 Vue.component('piaf-breadcrumb', Breadcrumb);

@@ -3,7 +3,6 @@ import moment from 'moment'
 import { apiBackend } from '@/constants/config'
 // import { store } from '@/store/index'
 import _ from 'lodash'
-import { version } from '../../../package.json'
 
 const NOTIFY_TYPE_WARNING = 'warning filled'
 const NOTIFY_TYPE_SUCCESS = 'success filled'

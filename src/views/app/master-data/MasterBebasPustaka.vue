@@ -17,7 +17,7 @@
 
                 <b-colxx sm="6">
                   <b-form-group label="Status Perpustakaan">
-                    <b-form-input v-model="filters[1].value" />
+                    <b-form-select v-model="filters[1].value" :options="optionsStatus"></b-form-select>
                   </b-form-group>
                 </b-colxx>
               </b-row>
@@ -49,19 +49,23 @@
         ref="tblPagingMember"
         title="List Bebas Pustaka" class="mt-2"
         picker="pagingBebasPustaka"
-        :perPage=50
+        :perPage=25
         search=""
         sortDesc
         :filters="filters"
         :show-checkbox="true"
         :selected-flag="'bebas_pustaka'"
-        @detail-data="viewDetail"
+        @process-data="proccessPerMember"
         :disabledButton="disabledButton"
+        :showCustomPerPage="true"
       ></e-paging-server>
     </div>
   </template>
   <script>
   import pagingServer from '@/components/Customs/PagingServer'
+  import FormTool from '@/components/Customs/FormTool'
+  import { apiBackend } from '@/constants/config'
+
   export default {
     components: {
       'e-paging-server': pagingServer
@@ -70,7 +74,11 @@
       return {
         filters: [
           { id: 'member_name', value: '', opr: 'LIKE', type: 'STRING' },
-          { id: 'bebas_pustaka', value: '', opr: 'LIKE', type: 'BOOLEAN' },
+          { id: 'bebas_pustaka', value: '', opr: 'EQUAL', type: 'STRING' },
+        ],
+        optionsStatus: [
+          { value: 0, text: 'Ada Peminjaman' },
+          { value: 1, text: 'Tidak ada Peminjaman' }
         ]
       }
     },
@@ -83,12 +91,29 @@
         this.filters[1].value = ''
         this.$refs.tblPagingMember.refresh('')
       },
-      viewDetail ({ bean }) {
-        console.log('from detail', bean)
+      async proccessPerMember ({ bean }) {
+        const responseConfirm = await FormTool.confirmWarning(this, 'Peringatan!', 'Apakah anda yakin akan merubah status user menjadi bebas pustaka?', 'Ya', 'Tidak')
+        if(!responseConfirm.value) {
+          return
+        }
+        const data  = { ...bean }
+        const payload = []
+        payload.push(data)
+        console.log('proccessPerMember', payload)
+        // try {
+        //   await axios.post(`${apiBackend}/user/setBebasPustaka`, payload)
+        //   this.$refs.tblPagingMember.fetchData()
+        // } catch (e) {
+        //   FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
+        // }
       },
       disabledButton (type, { item }) {
-        return true
-      }
+        return false
+        // if (type === 'checkbox' && item.bebas_pustaka === true) {
+        //   return true
+        // }
+        // return false
+      },
     }
   }
   

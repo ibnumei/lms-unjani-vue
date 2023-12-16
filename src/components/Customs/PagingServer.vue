@@ -3,6 +3,15 @@
       <b-colxx xxs="12">
         <b-card class="mb-4">
           <e-title v-if="title" id="main-title" :label="title" :refreshData="refreshData" :icon="titleIcon" style="padding: 0;"></e-title>
+          <b-row v-if="showCustomPerPage">
+            <b-colxx sm="2">
+              <b-form-select id="select=per-page" v-model="perPage_" :options="optionsPerPage" @change="setPerPage"></b-form-select>
+            </b-colxx>
+            <b-colxx sm="2">
+              <b-button id="processAllData" variant="outline-primary" class="default" @click="processAllData()">Process Semua</b-button>
+            </b-colxx>
+          </b-row>
+
           <b-table
           id="serverPaging"
           responsive
@@ -483,7 +492,8 @@ props: {
   refreshData: { type: Function, default: null },
   showCheckbox: { type: Boolean, default: false },
   selectedFlag: { type: String, required: false },
-  showPopupWarning: { type: Boolean, default: true }
+  showPopupWarning: { type: Boolean, default: true },
+  showCustomPerPage: {type: Boolean,  required: false, default: false}
 },
 watch: {
   filters (n) {
@@ -508,7 +518,13 @@ data () {
     color_: '#ea7f25',
     size_: '15px',
     isBusy: false,
-    isAllDataSelected: false
+    isAllDataSelected: false,
+    optionsPerPage: [
+      { value: 10, text: 10 },
+      { value: 25, text: 25 },
+      { value: 50, text: 50 },
+      { value: 100, text: 100 }
+    ]
   }
 },
 created () {
@@ -725,6 +741,23 @@ methods: {
       const selectedData = this.items_.filter(item => item[this.selectedFlag])
       this.isAllDataSelected = this.items_.length && selectedData.length === this.items_.length
     })
+  },
+  async processAllData() {
+    const responseConfirm = await FormTool.confirmWarning(this, 'Peringatan!', 'Apakah anda yakin akan merubah status user menjadi bebas pustaka?', 'Ya', 'Tidak')
+    if(!responseConfirm.value) {
+      return
+    }
+    const payload = this.items_
+    console.log(payload)
+    // try {
+    //   await axios.post(`${apiBackend}/user/setBebasPustaka`, payload)
+    //   // this.fetchData()
+    // } catch (e) {
+    //   FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
+    // }
+  },
+  setPerPage() {
+    this.fetchData()
   }
 },
 computed: {

@@ -47,6 +47,7 @@
     "vue-simple-calendar": "^5.0.0",
     "vue-slider-component": "^3.2.12",
     "vue-spinner": "1.0.3",
+    "vue-sweetalert2": "1.6.4",
     "vue-switches": "^2.0.1",
     "vue-yandex-maps": "^0.10.11",
     "vue2-datepicker": "^3.11.1",
