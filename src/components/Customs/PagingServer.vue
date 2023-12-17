@@ -1,5 +1,6 @@
 <template>
   <b-row>
+    <e-loading ref="loading"/>
       <b-colxx xxs="12">
         <b-card class="mb-4">
           <e-title v-if="title" id="main-title" :label="title" :refreshData="refreshData" :icon="titleIcon" style="padding: 0;"></e-title>
@@ -466,11 +467,14 @@ import { apiBackend } from '@/constants/config'
 import Title from '@/components/Customs/Title'
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import FormTool from '@/components/Customs/FormTool'
+import Loading from '@/components/Customs/Loading'
 
 export default {
 components: {
   'e-title': Title,
-  PulseLoader
+  PulseLoader,
+  'e-loading': Loading
+
 },
 props: {
   titleIcon: { type: String, default: '' },
@@ -749,12 +753,15 @@ methods: {
     }
     const payload = this.items_
     console.log(payload)
-    // try {
-    //   await axios.post(`${apiBackend}/user/setBebasPustaka`, payload)
-    //   // this.fetchData()
-    // } catch (e) {
-    //   FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
-    // }
+    try {
+      await axios.post(`${apiBackend}/user/set-bebas-pustaka`, payload)
+      this.fetchData()
+      this.$refs.loading.hide()
+      FormTool.popupSuccess(this, 'Success', 'Berhasil Merubah Status Menjadi Bebas Pustaka')
+    } catch (e) {
+      this.$refs.loading.hide()
+      FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
+    }
   },
   setPerPage() {
     this.fetchData()

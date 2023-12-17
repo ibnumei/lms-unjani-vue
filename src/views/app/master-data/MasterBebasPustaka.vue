@@ -1,5 +1,6 @@
 <template>
     <div>
+      <e-loading ref="loading"/>
       <b-row>
         <b-colxx xxs="12">
           <piaf-breadcrumb :heading="$t('menu.bebas-pustaka')"/>
@@ -62,13 +63,17 @@
     </div>
   </template>
   <script>
+
+  import axios from 'axios'
   import pagingServer from '@/components/Customs/PagingServer'
   import FormTool from '@/components/Customs/FormTool'
   import { apiBackend } from '@/constants/config'
+  import Loading from '@/components/Customs/Loading'
 
   export default {
     components: {
-      'e-paging-server': pagingServer
+      'e-paging-server': pagingServer,
+      'e-loading': Loading
     },
     data () {
       return {
@@ -96,16 +101,22 @@
         if(!responseConfirm.value) {
           return
         }
+        this.$refs.loading.show()
         const data  = { ...bean }
         const payload = []
         payload.push(data)
-        console.log('proccessPerMember', payload)
-        // try {
-        //   await axios.post(`${apiBackend}/user/setBebasPustaka`, payload)
-        //   this.$refs.tblPagingMember.fetchData()
-        // } catch (e) {
-        //   FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
-        // }
+        const headers = {
+          token: _.get(this.currentUser, 'token')
+        }
+        try {
+          await axios.post(`${apiBackend}/user/set-bebas-pustaka`, payload)
+          this.$refs.tblPagingMember.fetchData()
+          this.$refs.loading.hide()
+          FormTool.popupSuccess(this, 'Success', 'Berhasil Merubah Status Menjadi Bebas Pustaka')
+        } catch (e) {
+          this.$refs.loading.hide()
+          FormTool.popupError(this, 'Error', `Gagal merubah data ${e}`)
+        }
       },
       disabledButton (type, { item }) {
         return false
