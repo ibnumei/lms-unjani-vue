@@ -2,7 +2,7 @@
   <b-card>
     <h3>Daftar buku</h3>
     <b-table responsive hover :items="value" :fields="d_header">
-      <template #cell(actions)="row">
+      <template slot="actions" slot-scope="row">
         <b-button
           :id="`button_table_${row.index}`"
           size="xs"
