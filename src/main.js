@@ -29,7 +29,9 @@ import 'firebase/auth'
 import { getCurrentLanguage } from './utils'
 import VueQrcode from '@chenfengyuan/vue-qrcode';
 import VueSweetalert2 from 'vue-sweetalert2';
+import interceptors from './utils/interceptors';
 
+interceptors()
 Vue.use(BootstrapVue);
 Vue.use(VueI18n);
 const messages = { en: en, es: es };
