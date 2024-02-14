@@ -30,7 +30,7 @@
                 <b-card>
                   <div class="image-container">
                     <b-card-img
-                      :src="content.imgSrc"
+                      :src="content.image"
                       alt="Image"
                       class="image"
                       top
@@ -107,7 +107,7 @@ export default {
         {
           id: 1,
           title: "asd",
-          img: `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/Psikologi_Sosial,_Jilid_2.jpg.jpg&width=200`,
+          image: null
         },
       ],
       glideBookOption: {
@@ -124,22 +124,22 @@ export default {
       },
       bookContent: [
         {
-          imgSrc: "/assets/img/books/createthumb-1.jfif",
+          image: "/assets/img/books/createthumb-1.jfif",
         },
         {
-          imgSrc: "/assets/img/books/createthumb-2.jfif",
+          image: "/assets/img/books/createthumb-2.jfif",
         },
         {
-          imgSrc: "/assets/img/books/createthumb-3.jfif",
+          image: "/assets/img/books/createthumb-3.jfif",
         },
         {
-          imgSrc: "/assets/img/books/createthumb-4.jfif",
+          image: "/assets/img/books/createthumb-4.jfif",
         },
         {
-          imgSrc: "/assets/img/books/createthumb-5.jfif",
+          image: "/assets/img/books/createthumb-5.jfif",
         },
         {
-          imgSrc: "/assets/img/books/createthumb-6.jfif",
+          image: "/assets/img/books/createthumb-6.jfif",
         },
       ],
       keyword: "psikologi",
@@ -200,11 +200,6 @@ export default {
   computed: {
     contents() {
       const contents = _.get(this.response, "tutorials", []);
-      contents.forEach((content) => {
-        if (!!content.image) {
-          content.imgSrc = `http://library-lama.unjani.id/lib/minigalnano/createthumb.php?filename=../../images/docs/${content.image}&width=200`;
-        }
-      });
       return contents;
     },
     curerntPages() {
