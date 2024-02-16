@@ -13,6 +13,8 @@
             search=""
             sortDesc
             :filters="filterMemberRent"
+            :render-button="renderButton"
+            @show-qr="detailData"
           />
         </b-tab>
         <b-tab title="Kartu Bebas Pustaka" @click="fetchBebasPustaka">
@@ -88,6 +90,21 @@ export default {
   methods: {
     async printContent() {
       await this.$htmlToPaper('printableContent');
+    },
+    renderButton(type, row) {
+      const status_pinjam = _.get(row, 'item.status_pinjam');
+      return status_pinjam == 1;
+    },
+    detailData(row) {
+      const kode_pinjam = _.get(row, 'bean.kode_pinjam');
+      if (!kode_pinjam) return;
+      this.$router.push({
+        name: 'generate-qr',
+        params: {
+          qr: kode_pinjam,
+          isGoback: true
+        }
+      })
     },
     initFilter() {
       this.filterMemberRent[0].value = this.currentUser.id;

@@ -262,6 +262,17 @@
                   Detail
                 </b-tooltip>
               </slot>
+              <slot v-if="showButton('show-qr', row)">
+                <b-button :id="'QrIcn_' + row.index" size="xs" variant="outline-primary" class="default"
+                  @click="_onClick(row, row.index, 'show-qr')"
+                  :disabled="disabledAction('show-qr', row)"
+                >
+                  <em class="iconsminds-qr-code"></em>
+                </b-button>
+                <b-tooltip :target="'QrIcn_' + row.index" triggers="hover">
+                  Show QR
+                </b-tooltip>
+              </slot>
               <slot v-if="showButton('view_fpk', row)">
                 <b-button :id="'ViewFpk_'+row.index" size="xs" variant="outline-primary" class="default"
                   @click="_onClick(row, row.index, 'view-fpk')"

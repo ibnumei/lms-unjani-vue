@@ -17,6 +17,7 @@ const routes = [
   {
     path: "/generate-qr/:qr",
     name: "generate-qr",
+    props: true,
     component: () => import("./views/qr/Generate.vue"),
   },
   {
