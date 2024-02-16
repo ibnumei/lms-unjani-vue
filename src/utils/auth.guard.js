@@ -1,5 +1,8 @@
 import { isAuthGuardActive } from '../constants/config'
 import { setCurrentUser, getCurrentUser } from '.'
+import jwtDecode from 'vue-jwt-decode'
+import user from '../store/modules/user'
+
 export default (to, from, next) => {
   if (to.matched.some(record => record.meta.loginRequired)) {
     if (isAuthGuardActive) {
@@ -19,6 +22,16 @@ export default (to, from, next) => {
       next();
     }
   } else {
-    next()
+    if (localStorage.user) {
+      const jwtPayload = jwtDecode.decode(JSON.parse(localStorage.user).token);
+
+      if (jwtPayload.exp < Date.now() / 1000) {
+        localStorage.removeItem('user')
+        user.state.currentUser = null
+
+        return next('/')
+      }
+    }
+    return next()
   }
 }

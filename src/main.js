@@ -30,7 +30,9 @@ import { getCurrentLanguage } from './utils'
 import VueQrcode from '@chenfengyuan/vue-qrcode';
 import VueSweetalert2 from 'vue-sweetalert2';
 import VueHtmlToPaper from 'vue-html-to-paper';
+import interceptors from './utils/interceptors';
 
+interceptors()
 Vue.use(BootstrapVue);
 Vue.use(VueHtmlToPaper);
 Vue.use(VueI18n);
