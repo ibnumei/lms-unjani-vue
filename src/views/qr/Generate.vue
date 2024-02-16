@@ -33,6 +33,9 @@ import Body from "../common/Body.vue";
 import { mapMutations } from 'vuex';
 
 export default {
+  props: {
+    isGoback: { type: Boolean, default: false }
+  },
   components: {
     "b-body": Body,
   },
@@ -47,7 +50,11 @@ export default {
   methods: {
     ...mapMutations(['setUser']),
     goBack() {
-      this.$router.push({
+      console.log(this.isGoback)
+      if (this.isGoback) {
+        return this.$router.go(-1)
+      }
+      return this.$router.push({
         name: 'landing-page',
       })
     },
