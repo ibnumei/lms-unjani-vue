@@ -158,6 +158,18 @@ export default {
           token: _.get(this.currentUser, 'token')
         }
         const response = await axios.post(`${apiBackend}/search-rent-book`, payload, { headers });
+        const success = _.get(response, 'data.success')
+        if (!success) {
+          const message = _.get(response, 'data.message')
+          return this.$notify(
+          'error', 
+          'Peringatan!', 
+          message, 
+          { 
+            duration: 3000, 
+            permanent: false 
+        });
+        }
         const data = _.get(response, 'data.data')
         data.item_code = _.get(data, 'items[0].item_code')
         data.inventory_code = _.get(data, 'items[0].inventory_code')
