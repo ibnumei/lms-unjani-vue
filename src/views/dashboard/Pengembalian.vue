@@ -74,8 +74,8 @@ export default {
           kode_pinjam: this.qrCodeContent
         }
         const response = await axios.put(`${apiBackend}/rent-book`, payload, { headers });
-        const data = _.get(response, 'data.data')
-        console.log(data)
+        console.log(response)
+        const data = _.get(response, 'data.success')
         if (!!data) {
           this.$notify(
             'success', 
