@@ -37,6 +37,7 @@
               <img :alt="currentUser.fullname" src="@/assets/img/user-profile.png" />
             </span>
           </template>
+          <b-dropdown-item @click="logout">Logout</b-dropdown-item>
         </b-dropdown>
       </div>
     </div>

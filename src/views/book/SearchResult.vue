@@ -23,7 +23,7 @@
           <b-card>
             <b-row>
               <b-card-group
-                class="col-md-3"
+                class="col-md-2"
                 v-for="(content, index) in contents"
                 :key="index"
               >
@@ -91,7 +91,7 @@ import Loading from "@/components/Customs/Loading";
 
 export default {
   props: {
-    pageSize: { default: 4 },
+    pageSize: { default: 12 },
   },
   components: {
     "glide-component": GlideComponent,

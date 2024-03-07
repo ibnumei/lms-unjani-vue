@@ -39,7 +39,8 @@
     <div class="row">
       <div class="card col-12 p-0">
         <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
-        <div class="home-carousel">
+        <e-book-paging />
+        <!-- <div class="home-carousel">
           <glide-component :settings="glideBookOption">
             <div
               class="card"
@@ -59,7 +60,7 @@
               </b-card>
             </div>
           </glide-component>
-        </div>
+        </div> -->
       </div>
     </div>
   </b-body>
@@ -71,11 +72,13 @@ import axios from 'axios';
 import GlideComponent from "../../components/Carousel/GlideComponent";
 import Body from "../common/Body.vue";
 import { apiBackend } from "@/constants/config";
+import BookPagination from './BookPagination.vue';
 
 export default {
   components: {
     "glide-component": GlideComponent,
     "b-body": Body,
+    "e-book-paging": BookPagination
   },
   data() {
     return {
