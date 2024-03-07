@@ -62,6 +62,7 @@ import { apiBackend } from "@/constants/config";
 export default {
   props: {
     pageSize: { default: 12 },
+    keyword: { default: null }
   },
   data () {
     return {
@@ -106,6 +107,20 @@ export default {
         this.$refs.loading.show()
         const response = await axios.get(
           `${apiBackend}/book?sortBy=input_date&order=DESC&page=${this.curerntPage}&size=${this.pageSize}`
+        );
+        this.response = _.get(response, "data.data", {});
+      } catch (error) {
+        console.log(error)
+        this.commonErrorNotif()
+      }  finally {
+        this.$refs.loading.hide()
+      }
+    },
+    async searchBook() {
+      try {
+        this.$refs.loading.show()
+        const response = await axios.get(
+          `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`
         );
         this.response = _.get(response, "data.data", {});
       } catch (error) {

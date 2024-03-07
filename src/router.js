@@ -15,6 +15,11 @@ const routes = [
     component: () => import("./views/home"),
   },
   {
+    path: "/pencarian",
+    name: "pencarian",
+    component: () => import("./views/pencarian"),
+  },
+  {
     path: "/generate-qr/:qr",
     name: "generate-qr",
     props: true,
