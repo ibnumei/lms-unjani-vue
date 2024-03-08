@@ -94,8 +94,6 @@ export default {
       });
     },
     itemAction (item) {
-      console.log(item)
-      console.log(item.id_book)
       !!item.id_book && this.$router.push({
         name: 'detail-buku',
         params: {

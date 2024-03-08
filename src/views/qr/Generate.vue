@@ -24,12 +24,6 @@
             <em style="font-style: normal; font-weight: bold; font-size: 18px;">{{qr}}</em>
           </div>
  
-          <!-- <qrcode
-            ref="yascan"
-            :value="qr"
-            class="qr-code" 
-            :options="{ width: '100%', height: '100%' }"
-          /> -->
           <img 
           style="
           width: 450px; 
@@ -105,7 +99,6 @@ export default {
 
     },
     goBack() {
-      console.log(this.isGoback)
       if (this.isGoback) {
         return this.$router.go(-1)
       }

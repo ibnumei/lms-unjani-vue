@@ -40,27 +40,6 @@
       <div class="card col-12 p-0">
         <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
         <e-book-paging />
-        <!-- <div class="home-carousel">
-          <glide-component :settings="glideBookOption">
-            <div
-              class="card"
-              v-for="(f, index) in bookContent"
-              :key="`bookContent_${index}`"
-              @click="itemAction(f)"
-            >
-              <b-card class="flex-row" no-body>
-                <div class="w-100 position-relative">
-                  <img
-                    class="card-img"
-                    style="max-height: 210px"
-                    :src="f.image"
-                    alt="Card cap"
-                  />
-                </div>
-              </b-card>
-            </div>
-          </glide-component>
-        </div> -->
       </div>
     </div>
   </b-body>
@@ -130,8 +109,6 @@ export default {
       });
     },
     itemAction (item) {
-      console.log(item)
-      console.log(item.id_book)
       !!item.id_book && this.$router.push({
         name: 'detail-buku',
         params: {
