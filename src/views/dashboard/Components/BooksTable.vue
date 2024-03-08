@@ -143,26 +143,40 @@ export default {
       return this.$refs.modalScanner.openScanner()
     },
     handleQrScan(payload) {
-      const itemCode = payload.match(REGEX_ITEM_CODE)[1];
-      const title = payload.match(REGEX_TITLE)[1];
+      try {
+        const itemCode = payload.match(REGEX_ITEM_CODE)[1];
+        const title = payload.match(REGEX_TITLE)[1];
 
-      const itemMatch = this.value[this.qrVerifyIndex].item_code === itemCode
-      const titleMatch = this.value[this.qrVerifyIndex].title === title
+        const itemMatch = this.value[this.qrVerifyIndex].item_code === itemCode
+        const titleMatch = this.value[this.qrVerifyIndex].title === title
 
-      if (itemMatch && titleMatch) {
-        this.verifiedItemCode.push(itemCode)
-        this.value[this.qrVerifyIndex].verified = true
+        if (itemMatch && titleMatch) {
+          this.verifiedItemCode.push(itemCode)
+          this.value[this.qrVerifyIndex].verified = true
 
-        this.$notify(
-          'success',
-          'Notifikasi!',
-          'Berhasil Verifikasi Buku',
-          {
-            duration: 3000,
-            permanent: false
-          }
-        );
-      } else {
+          this.$notify(
+            'success',
+            'Notifikasi!',
+            'Berhasil Verifikasi Buku',
+            {
+              duration: 3000,
+              permanent: false
+            }
+          );
+        } else {
+          this.$notify(
+            'error',
+            'Peringatan!',
+            'QR Buku Tidak Sesuai',
+            {
+              duration: 3000,
+              permanent: false
+            }
+          );
+        }
+      } catch(e) {
+        console.error(e)
+
         this.$notify(
           'error',
           'Peringatan!',
@@ -172,10 +186,10 @@ export default {
             permanent: false
           }
         );
+      } finally {
+        this.$refs.modalScanner.stopQrScanner()
+        return this.$refs.modalScanner.closeScanner()
       }
-
-      this.$refs.modalScanner.stopQrScanner()
-      return this.$refs.modalScanner.closeScanner()
     }
   },
   mounted() {
