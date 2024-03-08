@@ -82,25 +82,6 @@ export default {
     };
   },
   methods: {
-    async getImagesFromName() {
-      const response = await axios.get(`${apiBackend}/book?page=1&size=10`);
-      const books = _.get(response, 'data.data.tutorials', [])
-
-      this.bookContent = []
-      books.forEach((element) => {
-         this.bookContent.push({
-          ...element
-         })
-      });
-    },
-    itemAction (item) {
-      !!item.id_book && this.$router.push({
-        name: 'detail-buku',
-        params: {
-          id: item.id_book
-        }
-      })
-    },
     searchBook () {
       if (!!this.searchKeyword) {
         this.$refs.bookPaging.searchBook()
@@ -116,9 +97,6 @@ export default {
     }
   },
   computed: {
-  },
-  mounted() {
-    this.getImagesFromName();
   },
   beforeDestroy() {},
 };
