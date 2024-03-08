@@ -20,7 +20,8 @@
     <e-books-table
       class="mt-4"
       v-model="items"
-      :show-action="false"
+      :show-action="'verify'"
+      :verified-item-code="verifiedItemCode"
       @submit-data="submitReturnBook"
     />
   </b-body>
@@ -49,17 +50,18 @@ export default {
     return {
       qrCodeContent: null,
       items: [],
+      verifiedItemCode: []
     };
   },
   methods: {
     commonErrorNotif () {
       return this.$notify(
-        'error', 
-        'Perhatian!', 
-        'Terjadi Kesalahan', 
-        { 
-          duration: 3000, 
-          permanent: false 
+        'error',
+        'Perhatian!',
+        'Terjadi Kesalahan',
+        {
+          duration: 3000,
+          permanent: false
       });
     },
     async submitReturnBook () {
@@ -71,19 +73,20 @@ export default {
           token: _.get(this.currentUser, 'token')
         }
         const payload = {
-          kode_pinjam: this.qrCodeContent
+          kode_pinjam: this.qrCodeContent,
+          id_item_stock: this.verifiedItemCode
         }
         const response = await axios.put(`${apiBackend}/rent-book`, payload, { headers });
         console.log(response)
         const data = _.get(response, 'data.success')
         if (!!data) {
           this.$notify(
-            'success', 
-            'Notifikasi!', 
-            'Buku Berhasil Dikembalikan', 
-            { 
-              duration: 3000, 
-              permanent: false 
+            'success',
+            'Notifikasi!',
+            'Buku Berhasil Dikembalikan',
+            {
+              duration: 3000,
+              permanent: false
           });
           this.goBack()
         }
@@ -128,12 +131,12 @@ export default {
         if (!success) {
           this.qrCodeContent = null
           return this.$notify(
-          'error', 
-          'Peringatan!', 
-          _.get(response, 'data.message', 'Terjadi Kesalahan'), 
-          { 
-            duration: 3000, 
-            permanent: false 
+          'error',
+          'Peringatan!',
+          _.get(response, 'data.message', 'Terjadi Kesalahan'),
+          {
+            duration: 3000,
+            permanent: false
           });
         }
         data.forEach((element) => {
@@ -147,7 +150,7 @@ export default {
       } finally {
         this.$refs.loading.hide()
       }
-    },
+    }
   },
   computed: {
     ...mapGetters(['currentUser']),

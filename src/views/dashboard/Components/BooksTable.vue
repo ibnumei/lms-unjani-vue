@@ -1,43 +1,61 @@
 <template>
-  <b-card>
-    <h3>Daftar buku</h3>
-    <b-table responsive hover :items="value" :fields="d_header">
-      <template slot="actions" slot-scope="row">
+  <div>
+    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <b-card>
+      <h3>Daftar buku</h3>
+      <b-table responsive hover :items="value" :fields="d_header">
+        <template slot="actions" slot-scope="row">
+          <b-button
+            :id="`button_delete_table_${row.index}`"
+            size="xs"
+            @click="deleteAction(row)"
+            variant="outline-primary"
+            class="default"
+          >
+            <em class="simple-icon-trash"></em> Hapus
+          </b-button>
+        </template>
+        <template slot="verify" slot-scope="row">
+          <b-button
+            :id="`button_qr_table_${row.index}`"
+            size="xs"
+            @click="openScanner(row.index)"
+            variant="outline-primary"
+            class="default"
+            :disabled="row.item.disabled"
+          >
+            <em class="iconsminds-qr-code" />
+          </b-button>
+        </template>
+      </b-table>
+      <div class="d-flex justify-content-end">
         <b-button
-          :id="`button_table_${row.index}`"
-          size="xs"
-          @click="deleteAction(row)"
-          variant="outline-primary"
-          class="default"
+          @click="submit"
+          variant="primary"
+          size="lg"
+          class="btn-multiple-state btn-shadow mr-2"
         >
-          <em class="simple-icon-trash"></em> Hapus
+          <span class="label">Submit</span>
         </b-button>
-      </template>
-    </b-table>
-    <div class="d-flex justify-content-end">
-      <b-button
-        @click="submit"
-        variant="primary"
-        size="lg"
-        class="btn-multiple-state btn-shadow mr-2"
-      >
-        <span class="label">Submit</span>
-      </b-button>
-      <b-button
-        @click="goBack"
-        variant="primary"
-        size="lg"
-        :class="{
-          'btn-multiple-state btn-shadow': true,
-        }"
-      >
-        <span class="label">Kembali</span>
-      </b-button>
-    </div>
-  </b-card>
+        <b-button
+          @click="goBack"
+          variant="primary"
+          size="lg"
+          :class="{
+            'btn-multiple-state btn-shadow': true,
+          }"
+        >
+          <span class="label">Kembali</span>
+        </b-button>
+      </div>
+    </b-card>
+  </div>
 </template>
+
 <script>
 import _ from "lodash";
+import ModalScanner from './ModalScanner.vue'
+
 const tabelHeader = [
   {
     key: "biblio_id",
@@ -60,15 +78,22 @@ const tabelHeader = [
     sortable: false,
   },
 ];
+
 export default {
+  components: {
+    'e-scanner': ModalScanner
+  },
   props: {
-    showAction: { default: false },
+    showAction: { default: '' },
     value: { default: [] },
-    onBack: { type: Function, default: null }
+    onBack: { type: Function, default: null },
+    verifiedItemCode: { default: [] }
   },
   data() {
     return {
-      d_header: []
+      d_header: [],
+      qrCodeContent: null,
+      qrVerifyIndex: null
     };
   },
   methods: {
@@ -79,11 +104,19 @@ export default {
     },
     setHeader () {
       this.d_header = tabelHeader
-      if (this.showAction) {
+      if (this.showAction === 'delete') {
         this.d_header.push({
           key: "actions",
           label: "Action",
           sortable: false,
+        });
+      }
+      if (this.showAction === 'verify') {
+        this.d_header.push({
+          key: "verify",
+          label: "Verifikasi",
+          sortable: false,
+          tdClass: 'text-center'
         });
       }
     },
@@ -100,9 +133,48 @@ export default {
     },
     submit () {
       this.$emit('submit-data')
+    },
+    openScanner (index) {
+      this.qrVerifyIndex = index
+      return this.$refs.modalScanner.openScanner()
+    },
+    handleQrScan(payload) {
+      const regexItemCode = /itemCode: "([^"]+)"/;
+      const regexTitle = /title: "([^"]+)"/;
+      const itemCode = payload.match(regexItemCode)[1];
+      const title = payload.match(regexTitle)[1];
+
+      const itemMatch = !!(this.value[this.qrVerifyIndex].items.find(item => item.item_code === itemCode))
+      const titleMatch = this.value[this.qrVerifyIndex].title === title
+
+      if (itemMatch && titleMatch) {
+        this.verifiedItemCode.push(itemCode)
+        this.value[this.qrVerifyIndex].disabled = true
+
+        this.$notify(
+          'success',
+          'Notifikasi!',
+          'Berhasil Verifikasi Buku',
+          {
+            duration: 3000,
+            permanent: false
+          }
+        );
+      } else {
+        this.$notify(
+          'error',
+          'Peringatan!',
+          'QR Buku Tidak Sesuai',
+          {
+            duration: 3000,
+            permanent: false
+          }
+        );
+      }
+
+      this.$refs.modalScanner.stopQrScanner()
+      return this.$refs.modalScanner.closeScanner()
     }
-  },
-  computed: {
   },
   mounted() {
     this.init()
