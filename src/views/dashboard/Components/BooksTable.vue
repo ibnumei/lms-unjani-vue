@@ -17,7 +17,8 @@
         </template>
         <template slot="verify" slot-scope="row">
           <b-button
-            :id="`button_qr_table_${row.index}`"
+            v-if="!row.item.verified"
+            :id="`button_verify_table_${row.index}`"
             size="xs"
             @click="openScanner(row.index)"
             variant="outline-primary"
@@ -79,6 +80,9 @@ const tabelHeader = [
   },
 ];
 
+const REGEX_ITEM_CODE = /itemCode: "([^"]+)"/;
+const REGEX_TITLE = /title: "([^"]+)"/;
+
 export default {
   components: {
     'e-scanner': ModalScanner
@@ -103,7 +107,7 @@ export default {
       this.$emit("input", x);
     },
     setHeader () {
-      this.d_header = tabelHeader
+      this.d_header = [...tabelHeader]
       if (this.showAction === 'delete') {
         this.d_header.push({
           key: "actions",
@@ -139,17 +143,15 @@ export default {
       return this.$refs.modalScanner.openScanner()
     },
     handleQrScan(payload) {
-      const regexItemCode = /itemCode: "([^"]+)"/;
-      const regexTitle = /title: "([^"]+)"/;
-      const itemCode = payload.match(regexItemCode)[1];
-      const title = payload.match(regexTitle)[1];
+      const itemCode = payload.match(REGEX_ITEM_CODE)[1];
+      const title = payload.match(REGEX_TITLE)[1];
 
-      const itemMatch = !!(this.value[this.qrVerifyIndex].items.find(item => item.item_code === itemCode))
+      const itemMatch = this.value[this.qrVerifyIndex].item_code === itemCode
       const titleMatch = this.value[this.qrVerifyIndex].title === title
 
       if (itemMatch && titleMatch) {
         this.verifiedItemCode.push(itemCode)
-        this.value[this.qrVerifyIndex].disabled = true
+        this.value[this.qrVerifyIndex].verified = true
 
         this.$notify(
           'success',
