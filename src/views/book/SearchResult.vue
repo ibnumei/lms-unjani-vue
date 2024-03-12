@@ -167,9 +167,11 @@ export default {
     async fetchPage() {
       try {
         this.$refs.loading.show()
-        const response = await axios.get(
-          `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`
-        );
+        let getBookApi = `${apiBackend}/book?title=${this.keyword}&page=${this.curerntPage}&size=${this.pageSize}`;
+        if (!this.keyword) { 
+          getBookApi = `${apiBackend}/book?sortBy=input_date&order=DESC&page=${this.curerntPage}&size=${this.pageSize}`;
+        };
+        const response = await axios.get(getBookApi);
         this.response = _.get(response, "data.data", {});
       } catch (error) {
         console.log(error)
