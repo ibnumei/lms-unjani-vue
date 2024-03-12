@@ -192,9 +192,10 @@ export default {
       })
     },
     goSearch() {
-      if (!!this.keyword) {
-        this.fetchPage();
-      }
+      this.fetchPage();
+      // if (!!this.keyword) {
+      //   this.fetchPage();
+      // }
     },
   },
   computed: {
