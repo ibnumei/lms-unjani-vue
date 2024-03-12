@@ -26,6 +26,9 @@
           </b-card>
         </b-card-group>
       </b-row>
+      <div class="text-center" v-if="!contents.length">
+        <p class="text-center" style="font-size: 25px;"> Buku Tidak Ditemukan </p>
+      </div>
       <b-pagination-nav
         class="mt-5"
         size="lg"
