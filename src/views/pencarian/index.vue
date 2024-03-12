@@ -83,9 +83,10 @@ export default {
   },
   methods: {
     searchBook () {
-      if (!!this.searchKeyword) {
-        this.$refs.bookPaging.searchBook()
-      }
+      this.$refs.bookPaging.searchBook()
+      // if (!!this.searchKeyword) {
+      //   this.$refs.bookPaging.searchBook()
+      // }
     },
     redirectLogin (path) {
       this.$router.push({
