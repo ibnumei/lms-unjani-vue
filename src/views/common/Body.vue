@@ -41,7 +41,7 @@
           <div class="content-container" id="home">
             <div class="section home" id="sectionHome">
               <div class="container bottom-space">
-                <div class="row mt-4" id="homeRow">
+                <div v-if="slideshow" class="row mt-4" id="homeRow">
                   <div class="mt-5">&nbsp;</div>
                   <b-colxx xxs="12" class="pl-0 pr-0 mt-4">
                     <div>
@@ -85,6 +85,7 @@
                     </div>
                   </b-colxx>
                 </div>
+                <div v-else style="padding-bottom: 6em;" id="homeRow"></div>
                 <!-- template disini -->
                 <slot></slot>
                 <!-- template disitu -->
@@ -113,6 +114,9 @@ import GlideComponent from "../../components/Carousel/GlideComponent";
 import { mapGetters } from 'vuex';
 
 export default {
+  props: {
+    slideshow: { default: true }
+  },
   components: {
     "home-layout": HomeLayout,
     "glide-component": GlideComponent,

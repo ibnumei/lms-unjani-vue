@@ -1,5 +1,16 @@
 <template>
-  <b-body>
+  <b-body :slideshow="false">
+    <div class="row mt-5">
+      <div class="col-12 p-0">
+        <div class="home-carousel">
+          <div class="text-header">
+            <p style="font-size: 50px; margin-top: 5em">Selamat Datang Di Perpustakaan</p>
+            <p style="font-size: 30px; margin-bottom: 3em; margin-top: 1em" >Universitas Jendral Achmad Yani</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-12 p-0">
         <div class="home-carousel">
@@ -13,33 +24,9 @@
       </div>
     </div>
 
-    <div class="row mb-4">
-      <b-colxx lg="6" class="home-carousel pr-4 pl-3">
-        <div class="card row" @click="redirectLogin('pengembalian')">
-          <div class="card-body text-center">
-            <div>
-              <i class="iconsminds-inbox-into large-icon"></i>
-              <h5 class="mb-3 font-weight-semibold">Pengembalian</h5>
-            </div>
-          </div>
-        </div>
-      </b-colxx>
-      <b-colxx lg="6" class="home-carousel pl-4 pr-3">
-        <div class="card row" @click="redirectLogin('peminjaman')">
-          <div class="card-body text-center">
-            <div>
-              <i class="iconsminds-inbox-out large-icon"></i>
-              <h5 class="mb-3 font-weight-semibold">Peminjaman</h5>
-            </div>
-          </div>
-        </div>
-      </b-colxx>
-    </div>
-
     <div class="row">
       <div class="card col-12 p-0">
-        <h2 class="text-dark pl-4 mt-4">Daftar Buku Terbaru</h2>
-        <e-book-paging />
+        <e-book-paging :keyword="searchKeyword" ref="bookPaging" />
       </div>
     </div>
   </b-body>
@@ -48,14 +35,12 @@
 <script>
 import _ from 'lodash'
 import axios from 'axios';
-import GlideComponent from "../../components/Carousel/GlideComponent";
 import Body from "../common/Body.vue";
 import { apiBackend } from "@/constants/config";
 import BookPagination from './BookPagination.vue';
 
 export default {
   components: {
-    "glide-component": GlideComponent,
     "b-body": Body,
     "e-book-paging": BookPagination
   },
@@ -97,33 +82,9 @@ export default {
     };
   },
   methods: {
-    async getImagesFromName() {
-      const response = await axios.get(`${apiBackend}/book?page=1&size=10`);
-      const books = _.get(response, 'data.data.tutorials', [])
-
-      this.bookContent = []
-      books.forEach((element) => {
-         this.bookContent.push({
-          ...element
-         })
-      });
-    },
-    itemAction (item) {
-      !!item.id_book && this.$router.push({
-        name: 'detail-buku',
-        params: {
-          id: item.id_book
-        }
-      })
-    },
     searchBook () {
       if (!!this.searchKeyword) {
-        this.$router.push({
-          name: 'cari-buku',
-          params: {
-            keyword: this.searchKeyword
-          }
-        })
+        this.$refs.bookPaging.searchBook()
       }
     },
     redirectLogin (path) {
@@ -135,8 +96,7 @@ export default {
       })
     }
   },
-  mounted() {
-    this.getImagesFromName();
+  computed: {
   },
   beforeDestroy() {},
 };
@@ -145,5 +105,11 @@ export default {
 .custom-rounded {
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
+}
+.text-header {
+  text-align: center;
+}
+.text-header p {
+  color: white !important;
 }
 </style>
