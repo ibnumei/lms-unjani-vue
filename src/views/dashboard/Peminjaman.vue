@@ -20,7 +20,7 @@
     <e-books-table
       class="mt-4"
       v-model="items"
-      :show-action="true"
+      :show-action="'delete'"
       @submit-data="submitRent"
     />
   </b-body>
@@ -55,12 +55,12 @@ export default {
   methods: {
     commonErrorNotif () {
       return this.$notify(
-        'error', 
-        'Perhatian!', 
-        'Terjadi Kesalahan', 
-        { 
-          duration: 3000, 
-          permanent: false 
+        'error',
+        'Perhatian!',
+        'Terjadi Kesalahan',
+        {
+          duration: 3000,
+          permanent: false
       });
     },
     showQRGenerated () {
@@ -74,12 +74,12 @@ export default {
     async submitRent () {
       if (this.items.length > 2) {
         return this.$notify(
-          'error', 
-          'Peringatan!', 
-          'Jumlah buku harus 2', 
-          { 
-            duration: 3000, 
-            permanent: false 
+          'error',
+          'Peringatan!',
+          'Jumlah buku harus 2',
+          {
+            duration: 3000,
+            permanent: false
         });
       }
       try {
@@ -97,12 +97,12 @@ export default {
         const data = _.get(response, 'data.data')
         if (!!data) {
           this.$notify(
-          'success', 
-          'Notifikasi!', 
-          'Buku Berhasil Ditambah', 
-          { 
-            duration: 3000, 
-            permanent: false 
+          'success',
+          'Notifikasi!',
+          'Buku Berhasil Ditambah',
+          {
+            duration: 3000,
+            permanent: false
           });
         }
         this.modalGeneratedRent = data;
@@ -162,12 +162,12 @@ export default {
         if (!success) {
           const message = _.get(response, 'data.message')
           return this.$notify(
-          'error', 
-          'Peringatan!', 
-          message, 
-          { 
-            duration: 3000, 
-            permanent: false 
+          'error',
+          'Peringatan!',
+          message,
+          {
+            duration: 3000,
+            permanent: false
         });
         }
         const data = _.get(response, 'data.data')
