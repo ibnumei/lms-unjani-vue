@@ -112,7 +112,7 @@ export default {
           name: this.path,
         })
       } catch (error) {
-        this.$notify('error', 'Peringatan!', 'Nama atau Password Salah', { duration: 3000, permanent: false });
+        this.$notify('error', 'Peringatan!', 'Nama atau Password Salah atau User sudah tidak aktif', { duration: 3000, permanent: false });
       } finally {
         this.processing = false
         this.neverLoggedIn = false

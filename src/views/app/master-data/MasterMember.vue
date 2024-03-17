@@ -60,7 +60,8 @@ export default {
     return {
       filters: [
         { id: 'member_id', value: '', opr: 'LIKE', type: 'STRING' },
-        { id: 'member_name', value: '', opr: 'LIKE', type: 'STRING' }
+        { id: 'member_name', value: '', opr: 'LIKE', type: 'STRING' },
+        { id: 'expire_date', value: '0000', opr: 'NOTSTARTWITH', type: 'STRING' }
       ]
     }
   },
