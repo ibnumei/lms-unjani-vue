@@ -71,12 +71,34 @@ export default {
         }
       })
     },
+    checkExpiredDate() {
+      const currentFullDate = new Date();
+      let expireDate;
+
+      if (this.currentUser.expire_date && this.currentUser.expire_date !== '0000-00-00') {
+        expireDate = new Date(this.currentUser.expire_date);
+      } else {
+        expireDate = new Date('1945-08-17');
+      }
+
+      return expireDate < currentFullDate;
+    },
     async submitRent () {
       if (this.items.length > 2) {
         return this.$notify(
           'error',
           'Peringatan!',
           'Jumlah buku harus 2',
+          {
+            duration: 3000,
+            permanent: false
+        });
+      }
+      if(this.checkExpiredDate())  {
+        return this.$notify(
+          'error',
+          'Peringatan!',
+          'Akun anda sudah expired',
           {
             duration: 3000,
             permanent: false
