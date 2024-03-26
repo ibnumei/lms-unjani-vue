@@ -41,6 +41,11 @@ const data = [
         icon: "iconsminds-security-settings",
         label: "menu.api",
         to: `${adminRoot}/settings/api`
+      },
+      {
+        icon: "iconsminds-time-backup",
+        label: "menu.scheduler",
+        to: `${adminRoot}/settings/scheduler`
       }
     ]
   },
