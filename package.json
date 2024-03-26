@@ -65,6 +65,7 @@
     "@vue/cli-plugin-router": "^4.5.13",
     "@vue/cli-plugin-vuex": "^4.5.13",
     "@vue/cli-service": "^4.5.13",
+    "@vue/runtime-dom": "^3.4.21",
     "copy-webpack-plugin": "^6.0.3",
     "node-sass": "^4.14.1",
     "sass-loader": "^9.0.2",
