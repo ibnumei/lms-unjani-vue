@@ -1,7 +1,7 @@
 <template>
   <b-body>
     <e-loading ref="loading" />
-    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <e-scanner ref="modalScanner" @on-scan="handleQrScan" v-model="qrCodeContent" />
     <b-card class="p-5">
       <div class="d-flex justify-content-center align-items-center">
         <b-button
@@ -157,8 +157,6 @@ export default {
             title
           }
           this.searchRentBook(payload)
-          this.$refs.modalScanner.stopQrScanner()
-          this.$refs.modalScanner.closeScanner()
         }
       } catch (error) {
         console.log(error)

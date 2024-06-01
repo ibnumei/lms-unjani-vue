@@ -1,6 +1,6 @@
 <template>
   <div>
-    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <e-scanner ref="modalScanner" @on-scan="handleQrScan" v-model="qrCodeContent" />
     <b-card>
       <h3>Daftar buku</h3>
       <b-table responsive hover :items="value" :fields="d_header">
@@ -151,7 +151,9 @@ export default {
         const titleMatch = this.value[this.qrVerifyIndex].title === title
 
         if (itemMatch && titleMatch) {
-          this.verifiedItemCode.push(itemCode)
+          if (![...this.verifiedItemCode].includes(itemCode)) {
+            this.verifiedItemCode.push(itemCode)
+          }
           this.value[this.qrVerifyIndex].verified = true
 
           this.$notify(

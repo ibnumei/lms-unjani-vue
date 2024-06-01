@@ -1,7 +1,7 @@
 <template>
   <b-body>
     <e-loading ref="loading" />
-    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <e-scanner ref="modalScanner" @on-scan="handleQrScan" />
     <b-card class="p-5">
       <div class="d-flex justify-content-center align-items-center">
         <b-button
@@ -68,7 +68,6 @@ export default {
       try {
         this.$refs.loading.show()
 
-        console.log(this.qrCodeContent)
         const headers = {
           token: _.get(this.currentUser, 'token')
         }
@@ -89,6 +88,15 @@ export default {
               permanent: false
           });
           this.goBack()
+        } else {
+          this.$notify(
+            'warning',
+            'Perhatian!',
+            _.get(response, 'data.message' , 'Data Tidak ditemukan atau status sudah dikembalikan'),
+            {
+              duration: 3000,
+              permanent: false
+          });
         }
       } catch (error) {
         console.log(error)
@@ -102,9 +110,8 @@ export default {
         const payload = result;
 
         if (!!payload && (payload !== this.qrCodeContent)) {
+          this.qrCodeContent = payload
           this.searchRentBook(payload)
-          this.$refs.modalScanner.stopQrScanner()
-          this.$refs.modalScanner.closeScanner()
         }
       } catch (error) {
         console.log(error)
@@ -130,6 +137,7 @@ export default {
         const success = _.get(response, 'data.success')
         if (!success) {
           this.qrCodeContent = null
+          this.items = []
           return this.$notify(
           'error',
           'Peringatan!',
