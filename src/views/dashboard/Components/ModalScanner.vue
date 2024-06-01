@@ -5,7 +5,7 @@
     id="modallg"
     ref="modalScanner"
     size="lg"
-    title="Scan Buku"
+    title="Scan QRCode"
     hide-footer
     v-model="show"
     @close="closeAction"

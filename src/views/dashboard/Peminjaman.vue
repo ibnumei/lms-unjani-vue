@@ -13,7 +13,7 @@
           }"
         >
           <i class="simple-icon-camera"></i>
-          <span class="label">Scan Buku</span>
+          <span class="label">Scan QRCode</span>
         </b-button>
       </div>
     </b-card>
