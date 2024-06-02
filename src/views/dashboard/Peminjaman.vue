@@ -23,6 +23,12 @@
       :show-action="'delete'"
       @submit-data="submitRent"
     />
+    <div class="video-recorder" v-show="false">
+      <video ref="video" playsinline autoplay></video>
+      <button @click="startRecording">Start Recording</button>
+      <button @click="stopRecording">Stop Recording</button>
+      <a :href="videoUrl" download="recorded-video.webm" v-if="videoUrl">Download Video</a>
+    </div>
   </b-body>
 </template>
 
@@ -36,8 +42,10 @@ import Loading from "@/components/Customs/Loading";
 import { mapGetters } from 'vuex';
 import ModalScanner from './Components/ModalScanner.vue'
 import BooksTable from './Components/BooksTable.vue'
+import mixinRecording from './mixinRecording'
 
 export default {
+  mixins: [mixinRecording],
   components: {
     "e-loading": Loading,
     "b-body": Body,
@@ -63,7 +71,7 @@ export default {
           permanent: false
       });
     },
-    showQRGenerated () {
+    goBack () {
       !!this.modalGeneratedRent && this.$router.push({
         name: 'generate-qr',
         params: {
@@ -84,6 +92,16 @@ export default {
       return expireDate < currentFullDate;
     },
     async submitRent () {
+      if (this.items.length === 0) {
+        return this.$notify(
+          'error',
+          'Peringatan!',
+          'Silahkan Scan QR Buku yang akan dipinjam',
+          {
+            duration: 3000,
+            permanent: false
+        });
+      }
       if (this.items.length > 2) {
         return this.$notify(
           'error',
@@ -126,9 +144,9 @@ export default {
             duration: 3000,
             permanent: false
           });
+          this.modalGeneratedRent = data;
+          await this.stopRecording(data)
         }
-        this.modalGeneratedRent = data;
-        this.showQRGenerated()
       } catch (error) {
         console.log(error)
         this.commonErrorNotif()
@@ -165,11 +183,6 @@ export default {
     },
     openScanner () {
       this.$refs.modalScanner.openScanner()
-    },
-    async goBack() {
-      this.$router.push({
-        name: 'landing-page',
-      })
     },
     async searchRentBook (payload) {
       try {
@@ -216,6 +229,8 @@ export default {
           path: this.$route.params.path
         }
       })
+    } else {
+      this.startRecording()
     }
   },
   beforeDestroy() {},

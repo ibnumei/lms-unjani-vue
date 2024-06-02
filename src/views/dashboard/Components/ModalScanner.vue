@@ -12,6 +12,7 @@
   >
     <a-scanner />
       <b-input
+        style="opacity: 0;"
         @blur="refocus"
         v-model="qrValue"
         ref="qrInput"

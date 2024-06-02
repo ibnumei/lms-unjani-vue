@@ -24,6 +24,12 @@
       :verified-item-code="verifiedItemCode"
       @submit-data="submitReturnBook"
     />
+    <div class="video-recorder" v-show="false">
+      <video ref="video" playsinline autoplay></video>
+      <button @click="startRecording">Start Recording</button>
+      <button @click="stopRecording">Stop Recording</button>
+      <a :href="videoUrl" download="recorded-video.webm" v-if="videoUrl">Download Video</a>
+    </div>
   </b-body>
 </template>
 
@@ -37,8 +43,10 @@ import Loading from "@/components/Customs/Loading";
 import { mapGetters } from 'vuex';
 import ModalScanner from './Components/ModalScanner.vue'
 import BooksTable from './Components/BooksTable.vue'
+import mixinRecording from './mixinRecording'
 
 export default {
+  mixins: [mixinRecording],
   components: {
     "e-loading": Loading,
     "b-body": Body,
@@ -87,7 +95,7 @@ export default {
               duration: 3000,
               permanent: false
           });
-          this.goBack()
+          await this.stopRecording(this.qrCodeContent)
         } else {
           this.$notify(
             'warning',
@@ -174,6 +182,8 @@ export default {
           path: this.$route.params.path
         }
       })
+    } else {
+      this.startRecording()
     }
   },
   beforeDestroy() {},
