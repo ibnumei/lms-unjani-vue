@@ -77,6 +77,7 @@ import _ from 'lodash';
 import axios from "axios";
 import { apiBackend } from "@/constants/config";
 import moment from "moment";
+import qz from 'qz-tray';
 
 export default {
   props: {
@@ -95,8 +96,81 @@ export default {
   methods: {
     ...mapMutations(['setUser']),
     async printContent() {
-      await this.$htmlToPaper('printableContent');
+      try {
+        // Connect to QZ Tray
+        await qz.websocket.connect();
 
+        // List available printers
+        const printers = await qz.printers.find();
+        console.log(printers); // Log available printers to the console
+
+        // Check if the specific printer is connected
+        const printerName = "POS-58C"; // Replace with your printer name
+        let printerStatus
+        if (printers.includes(printerName)) {
+          printerStatus = `${printerName} is connected.`;
+        } else {
+          printerStatus = `${printerName} is not connected.`;
+        }
+
+        // Create a configuration for the specified printer
+        const config = qz.configs.create(printerName, { encoding: 'ISO-8859-1' });
+
+        // The QR data
+        const qr = this.qr;
+
+        // The dot size of the QR code
+        const dots = '\x09';
+
+        // Some proprietary size calculation
+        const qrLength = qr.length + 3;
+        const size1 =  String.fromCharCode(qrLength % 256);
+        const size0 = String.fromCharCode(Math.floor(qrLength / 256));
+
+        const data = [
+          '\x1B' + '\x40',          // init
+          '\x1B' + '\x61' + '\x31', // center align
+          '\x1B' + '\x45' + '\x0D', // bold on
+          'Transaksi Berhasil' + '\x0A',
+          '\x1B' + '\x45' + '\x0A', // bold off
+          '--------------------------------' + '\x0A',
+          'Harap Simpan' + '\x0A',     // text and line break
+          'Bukti Peminjaman Ini' + '\x0A',     // text and line break
+          '\x0A',                   // line break
+          '\x1B' + '\x45' + '\x0D', // bold on
+          'Kode Peminjaman : ' + '\x0A',
+          qr + '\x0A',
+          '\x1B' + '\x45' + '\x0A', // bold off
+          '\x0A',
+          '\x0A',
+          // <!-- BEGIN QR DATA -->
+          '\x1D' + '\x28' + '\x6B' + '\x04' + '\x00' + '\x31' + '\x41' + '\x32' + '\x00',    // <Function 165> select the model (model 2 is widely supported)
+          '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x43' + dots,               // <Function 167> set the size of the module
+          '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x45' + '\x30',             // <Function 169> select level of error correction (48,49,50,51) printer-dependent
+          '\x1D' + '\x28' + '\x6B' + size1 + size0 + '\x31' + '\x50' + '\x30' + qr,          // <Function 080> send your data (testing 123) to the image storage area in the printer
+          '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x51' +'\x30',              // <Function 081> print the symbol data in the symbol storage area
+          '\x1D' + '\x28' + '\x6B' + '\x03' + '\x00' + '\x31' + '\x52' +'\x30',              // <Function 082> Transmit the size information of the symbol data in the symbol storage area
+          // <!-- END QR DATA -->
+          '\x0A',
+          '\x0A',
+          '\x1B' + '\x61' + '\x30', // left align       
+          '\x1B' + '\x45' + '\x0D', // bold on
+          'Nama : ' + this.namaPeminjam + '\x0A',
+          'Tanggal : ' + this.tanggalPeminjaman,
+          '\x1B' + '\x61' + '\x30', // left align
+          '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A',
+          '\x1B' + '\x69',          // cut paper (old syntax)
+        ]
+
+        // Print
+        await qz.print(config, data);
+
+        // Disconnect from QZ Tray
+        await qz.websocket.disconnect();
+      } catch (error) {
+        console.error('Error checking printer connection:', error);
+        this.printerStatus = 'Error checking printer connection.';
+      }
     },
     goBack() {
       if (this.isGoback) {
