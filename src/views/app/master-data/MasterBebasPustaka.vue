@@ -153,8 +153,7 @@ export default {
     renderButton(type, row) {
       console.log(row)
       if (type === 'Cetak') {
-        console.log(_.get(row, 'item.bebas_pustaka'))
-        return !_.get(row, 'item.bebas_pustaka')
+        return _.get(row, 'item.status') !== 'Ada Peminjaman'
       }
       return true
     },
