@@ -160,6 +160,15 @@
                   {{ showTooltip('Process','Process') }}
                 </b-tooltip>
               </slot>
+              <slot v-if="showButton('Cetak', row)">
+                <b-button :id="'cetak_'+row.index" size="xs" variant="outline-primary" class="default"
+                  @click="cetakData(row)">
+                  Cetak
+                </b-button>
+                <b-tooltip :target="'Process_'+row.index" triggers="hover">
+                  {{ showTooltip('Process','Process') }}
+                </b-tooltip>
+              </slot>
               <slot v-if="showButton('Continue', row)">
                 <b-button :id="'continue_'+row.index" size="xs" variant="outline-primary" class="default"
                   @click="continueData(row)">
@@ -690,6 +699,9 @@ methods: {
   },
   processData (item) {
     this.$emit('process-data', { bean: item.item, index: item.index })
+  },
+  cetakData (item) {
+    this.$emit('cetak-data', { bean: item.item, index: item.index })
   },
   continueData (item) {
     this.$emit('continue-data', { bean: item.item, index: item.index })

@@ -1,7 +1,7 @@
 <template>
   <b-body>
     <e-loading ref="loading" />
-    <e-scanner ref="modalScanner" :on-scan="handleQrScan" v-model="qrCodeContent" />
+    <e-scanner ref="modalScanner" @on-scan="handleQrScan" />
     <b-card class="p-5">
       <div class="d-flex justify-content-center align-items-center">
         <b-button
@@ -13,7 +13,7 @@
           }"
         >
           <i class="simple-icon-camera"></i>
-          <span class="label">Scan Buku</span>
+          <span class="label">Scan QRCode</span>
         </b-button>
       </div>
     </b-card>
@@ -24,6 +24,12 @@
       :verified-item-code="verifiedItemCode"
       @submit-data="submitReturnBook"
     />
+    <div class="video-recorder" v-show="false">
+      <video ref="video" playsinline autoplay></video>
+      <button @click="startRecording">Start Recording</button>
+      <button @click="stopRecording">Stop Recording</button>
+      <a :href="videoUrl" download="recorded-video.webm" v-if="videoUrl">Download Video</a>
+    </div>
   </b-body>
 </template>
 
@@ -37,8 +43,10 @@ import Loading from "@/components/Customs/Loading";
 import { mapGetters } from 'vuex';
 import ModalScanner from './Components/ModalScanner.vue'
 import BooksTable from './Components/BooksTable.vue'
+import mixinRecording from './mixinRecording'
 
 export default {
+  mixins: [mixinRecording],
   components: {
     "e-loading": Loading,
     "b-body": Body,
@@ -68,7 +76,6 @@ export default {
       try {
         this.$refs.loading.show()
 
-        console.log(this.qrCodeContent)
         const headers = {
           token: _.get(this.currentUser, 'token')
         }
@@ -88,7 +95,16 @@ export default {
               duration: 3000,
               permanent: false
           });
-          this.goBack()
+          await this.stopRecording(this.qrCodeContent)
+        } else {
+          this.$notify(
+            'warning',
+            'Perhatian!',
+            _.get(response, 'data.message' , 'Data Tidak ditemukan atau status sudah dikembalikan'),
+            {
+              duration: 3000,
+              permanent: false
+          });
         }
       } catch (error) {
         console.log(error)
@@ -102,9 +118,8 @@ export default {
         const payload = result;
 
         if (!!payload && (payload !== this.qrCodeContent)) {
+          this.qrCodeContent = payload
           this.searchRentBook(payload)
-          this.$refs.modalScanner.stopQrScanner()
-          this.$refs.modalScanner.closeScanner()
         }
       } catch (error) {
         console.log(error)
@@ -130,6 +145,7 @@ export default {
         const success = _.get(response, 'data.success')
         if (!success) {
           this.qrCodeContent = null
+          this.items = []
           return this.$notify(
           'error',
           'Peringatan!',
@@ -166,6 +182,8 @@ export default {
           path: this.$route.params.path
         }
       })
+    } else {
+      this.startRecording()
     }
   },
   beforeDestroy() {},
