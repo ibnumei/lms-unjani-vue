@@ -78,6 +78,7 @@ import axios from "axios";
 import { apiBackend } from "@/constants/config";
 import moment from "moment";
 import qz from 'qz-tray';
+import jsrsasign from 'jsrsasign'
 
 export default {
   props: {
@@ -205,6 +206,30 @@ export default {
   mounted() {
     this.generateQRCode()
     this.getQrInfo()
+    qz.security.setCertificatePromise((resolve, reject) => {
+          // Load the certificate and passphrase
+          resolve(process.env.VUE_APP_QZ_DIGITAL_CERTIFICATE);
+        });
+
+        const privateKey = process.env.VUE_APP_QZ_PRIVATE_KEY;
+        qz.security.setSignatureAlgorithm("SHA512"); // Since 2.1
+        qz.security.setSignaturePromise(function(toSign) {
+            return function(resolve, reject) {
+                try {
+                    // const pk = KEYUTIL.getKey(privateKey);
+                    const pk = jsrsasign.KEYUTIL.getKeyFromPlainPrivatePKCS8PEM(privateKey)
+                    // const sig = new KJUR.crypto.Signature({"alg": "SHA512withRSA"});  // Use "SHA1withRSA" for QZ Tray 2.0 and older
+                    const sig = new jsrsasign.KJUR.crypto.Signature({"alg": "SHA512withRSA"});
+                    sig.init(pk); 
+                    sig.updateString(toSign);
+                    const hex = sig.sign();
+                    resolve(jsrsasign.stob64(jsrsasign.hextorstr(hex)));
+                } catch (err) {
+                    console.error(err);
+                    reject(err);
+                }
+            };
+        });
   },
   beforeDestroy() {},
 };
