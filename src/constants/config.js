@@ -45,3 +45,4 @@ export const defaultColor = 'light.blueolympic'
 export const colors = ['bluenavy', 'blueyale', 'blueolympic', 'greenmoss', 'greenlime', 'purplemonster', 'orangecarrot', 'redruby', 'yellowgranola', 'greysteel']
 
 export const apiBackend = process.env.VUE_APP_API_BACKEND
+export const apiDrawer = process.env.VUE_APP_API_DRAWER

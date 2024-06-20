@@ -56,6 +56,8 @@
 <script>
 import _ from "lodash";
 import ModalScanner from './ModalScanner.vue'
+import { apiDrawer } from "@/constants/config";
+
 
 const tabelHeader = [
   {
@@ -142,7 +144,7 @@ export default {
       this.qrVerifyIndex = index
       return this.$refs.modalScanner.openScanner()
     },
-    handleQrScan(payload) {
+    async handleQrScan(payload) {
       try {
         const itemCode = payload.match(REGEX_ITEM_CODE)[1];
         const title = payload.match(REGEX_TITLE)[1];
@@ -155,6 +157,9 @@ export default {
             this.verifiedItemCode.push(itemCode)
           }
           this.value[this.qrVerifyIndex].verified = true
+          
+          //HIT Api Drawer with null payload when succesfully verification book 
+          await axios.post(`${apiDrawer}`, {})
 
           this.$notify(
             'success',
