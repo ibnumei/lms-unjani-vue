@@ -154,28 +154,27 @@ export default {
         this.$refs.loading.hide()
       }
     },
-    handleQrScan(result) {
+    handleQrScan(itemCode) {
       try {
-        const data = result;
-        const regexItemCode = /itemCode: "([^"]+)"/;
-        const regexTitle = /title: "([^"]+)"/;
-        const itemCodeArr = data.match(regexItemCode);
-        const titleArr = data.match(regexTitle);
+        // const data = result;
+        // const regexItemCode = /itemCode: "([^"]+)"/;
+        // const regexTitle = /title: "([^"]+)"/;
+        // const itemCodeArr = data.match(regexItemCode);
+        // const titleArr = data.match(regexTitle);
 
-        if (itemCodeArr && titleArr) {
-          const itemCode = itemCodeArr[1];
-          const title = titleArr[1];
+        // if (itemCodeArr && titleArr) {
+        //   const itemCode = itemCodeArr[1];
+        //   const title = titleArr[1];
           // handle multiple book with same item_code
           const existingBooks = _.find(this.items, { item_code: itemCode });
           if (!!existingBooks) {
             return
           }
           const payload = {
-            itemCode,
-            title
+            itemCode
           }
           this.searchRentBook(payload)
-        }
+        // }
       } catch (error) {
         console.log(error)
         this.commonErrorNotif()

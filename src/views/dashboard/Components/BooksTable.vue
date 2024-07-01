@@ -57,6 +57,7 @@
 import _ from "lodash";
 import ModalScanner from './ModalScanner.vue'
 import { apiDrawer } from "@/constants/config";
+import axios from "axios";
 
 
 const tabelHeader = [
@@ -144,15 +145,15 @@ export default {
       this.qrVerifyIndex = index
       return this.$refs.modalScanner.openScanner()
     },
-    async handleQrScan(payload) {
+    async handleQrScan(itemCode) {
       try {
-        const itemCode = payload.match(REGEX_ITEM_CODE)[1];
-        const title = payload.match(REGEX_TITLE)[1];
+        // const itemCode = payload.match(REGEX_ITEM_CODE)[1];
+        // const title = payload.match(REGEX_TITLE)[1];
 
         const itemMatch = this.value[this.qrVerifyIndex].item_code === itemCode
-        const titleMatch = this.value[this.qrVerifyIndex].title === title
+        // const titleMatch = this.value[this.qrVerifyIndex].title === title
 
-        if (itemMatch && titleMatch) {
+        if (itemMatch) {
           if (![...this.verifiedItemCode].includes(itemCode)) {
             this.verifiedItemCode.push(itemCode)
           }
