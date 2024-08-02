@@ -4,9 +4,9 @@
       <h1>Login</h1>
       <b-row>
         <e-text 
-          label="Nama" 
+          label="NIM" 
           :required="true" 
-          v-model="form.nama" 
+          v-model="form.nim" 
           :disabled="userNeverLogsIn"
         />
         <e-text
@@ -88,7 +88,7 @@ export default {
       processing: false,
       loginError: null,
       form: {
-        nama: null,
+        nim: null,
         password: null,
         firstLogin: null
       },
@@ -112,7 +112,7 @@ export default {
           name: this.path,
         })
       } catch (error) {
-        this.$notify('error', 'Peringatan!', 'Nama atau Password Salah atau User sudah tidak aktif', { duration: 3000, permanent: false });
+        this.$notify('error', 'Peringatan!', 'NIM atau Password Salah atau User sudah tidak aktif', { duration: 3000, permanent: false });
       } finally {
         this.processing = false
         this.neverLoggedIn = false
@@ -122,12 +122,15 @@ export default {
       }
     },
     async checkLogin() {
-      if (!this.form.nama || !this.form.password) {
-        this.$notify('warning', 'Peringatan!', 'Silahkan Isi Kolom Nama & Password', { duration: 3000, permanent: false });
+      if (!this.form.nim || !this.form.password) {
+        this.$notify('warning', 'Peringatan!', 'Silahkan Isi Kolom NIM & Password', { duration: 3000, permanent: false });
         return
       }
       const response = await axios.post(`${apiBackend}/check-login`, this.form)
       const { data } = response.data
+      if (!data) {
+        return this.$notify('error', 'Peringatan!', 'NIM atau Password Salah atau User sudah tidak aktif', { duration: 3000, permanent: false });
+      }
       if (!data.hasLoggedIn  && !this.newPassword && !this.confirmNewPassword)  {
         this.neverLoggedIn = true
         this.$notify('warning', 'Peringatan!', 'Anda Terdeteksi Pertama Kali Login, Silahkan Ganti Password', { duration: 3000, permanent: false });

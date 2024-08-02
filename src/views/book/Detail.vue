@@ -21,8 +21,11 @@
               :fields="headerKetersediaan"
               :items="books.items"
             >
+              <template slot="item_code" slot-scope="data">
+                <Barcode v-if="data.item.item_code" :value="data.item.item_code" />
+              </template>
               <template slot="status" slot-scope="data">
-                <b-badge class="mb-1" :variant="data.item.status == 'Tersedia' ? 'primary' : 'danger'" >{{ data.item.status }}</b-badge>
+                <b-badge class="mt-5" :variant="data.item.status == 'Tersedia' ? 'primary' : 'danger'" >{{ data.item.status }}</b-badge>
               </template>
             </b-table>
             <hr />
@@ -131,13 +134,15 @@ import _ from "lodash";
 import axios from "axios";
 import Body from "../common/Body.vue";
 import Text from "@/components/Customs/Text";
+import Barcode from "@/components/Customs/Barcode";
 import { apiBackend } from "@/constants/config";
 import jwtDecode from "vue-jwt-decode";
 
 export default {
   components: {
     "b-body": Body,
-    "e-text": Text
+    "e-text": Text,
+    Barcode
   },
   data() {
     return {
@@ -145,7 +150,6 @@ export default {
       loginError: null,
       headerKetersediaan: [
         { key: 'item_code', label: 'Kode Item' },
-        { key: 'call_number', label: 'Kode Panggil' },
         { key: 'status', label: 'Status' },
       ],
       books: {
