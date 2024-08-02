@@ -26,15 +26,19 @@
  
           <img 
           style="
-          width: 450px; 
-          height: 450px;
+          width: 400px; 
+          height: 400px;
           "
           :src="qrCodeUrl" alt="QR Code">
 
           <div style="text-align: left;">
+            <em style="font-style: normal; font-weight: bold; font-size: 18px;">NIM : {{nimPeminjam}}</em>
+            <br />
             <em style="font-style: normal; font-weight: bold; font-size: 18px;">Nama : {{namaPeminjam}}</em>
             <br />
             <em style="font-style: normal; font-weight: bold; font-size: 18px;">Tanggal : {{tanggalPeminjaman}}</em>
+            <br />
+            <em style="font-style: normal; font-weight: bold; font-size: 18px;">Jatuh Tempo : {{tanggalJatuhTempo}}</em>
           </div>
           
         </div>
@@ -89,8 +93,10 @@ export default {
   },
   data() {
     return {
+      nimPeminjam: null,
       namaPeminjam: null,
       tanggalPeminjaman: null,
+      tanggalJatuhTempo: null,
       qrCodeUrl: null
     };
   },
@@ -156,8 +162,10 @@ export default {
           '\x0A',
           '\x1B' + '\x61' + '\x30', // left align       
           '\x1B' + '\x45' + '\x0D', // bold on
+          'NIM : ' + this.nimPeminjam + '\x0A',
           'Nama : ' + this.namaPeminjam + '\x0A',
-          'Tanggal : ' + this.tanggalPeminjaman,
+          'Tanggal : ' + this.tanggalPeminjaman + '\x0A',
+          'Jatuh Tempo : ' + this.tanggalJatuhTempo,
           '\x1B' + '\x61' + '\x30', // left align
           '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A' + '\x0A',
           '\x1B' + '\x69',          // cut paper (old syntax)
@@ -193,9 +201,11 @@ export default {
         token: _.get(this.currentUser, 'token')
       }
       const response = await axios.get(`${apiBackend}/qr-info/${this.qr}`, { headers });
+      this.nimPeminjam = _.get(response, 'data.data.member.member_id');
       this.namaPeminjam = _.get(response, 'data.data.createdBy');
       const formattedDate = moment(_.get(response, 'data.data.tgl_pinjam')).locale('id').format('dddd D MMMM YYYY');
       this.tanggalPeminjaman = formattedDate;
+      this.tanggalJatuhTempo = moment(_.get(response, 'data.data.tgl_pinjam')).locale('id').add(8, 'days').format('dddd D MMMM YYYY');
     }
   },
   computed: {
