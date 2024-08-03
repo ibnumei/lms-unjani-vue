@@ -181,6 +181,16 @@ export default {
       }
     },
     openScanner () {
+      if (this.items.length >= 2) {
+        return this.$notify(
+          'error',
+          'Perhatian!',
+          'Peminjaman tidak boleh lebih dari 2 buku',
+          {
+            duration: 3000,
+            permanent: false
+        });
+      }
       this.$refs.modalScanner.openScanner()
     },
     async searchRentBook (payload) {
