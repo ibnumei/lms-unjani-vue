@@ -41,9 +41,18 @@
               variant="success default"
               size="sm"
               id="uiBtnBebasPustakaCari"
-              class="mt-2 btn-shadow"
+              class="mt-2 btn-shadow mr-2"
             >
               <em class="simple-icon-magnifier" />Cari
+            </b-button>
+            <b-button
+              @click="downloadExcel"
+              variant="success default"
+              size="sm"
+              id="uiBtnBebasPustakaCari"
+              class="mt-2 btn-shadow"
+            >
+              <em class="simple-icon-magnifier" />Export Data
             </b-button>
           </div>
         </b-card>
@@ -69,8 +78,11 @@
     <e-bebas-pustaka v-show="false" :memberInfo="memberInfo"/>
   </div>
 </template>
-  <script>
+<script>
+import _ from 'lodash'
 import axios from "axios";
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import pagingServer from "@/components/Customs/PagingServer";
 import FormTool from "@/components/Customs/FormTool";
 import { apiBackend } from "@/constants/config";
@@ -101,6 +113,49 @@ export default {
     };
   },
   methods: {
+    async downloadExcel() {
+      // console.log(this.$refs.tblPagingMember.fields_)
+      console.log(this.$refs.tblPagingMember.items_)
+      const refItems = _.get(this.$refs, 'tblPagingMember.items_', [])
+      // Create a new workbook
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet 1');
+
+      const rows = [];
+      refItems.forEach((item, index) => {
+        rows.push([ index + 1, item.member_name, item.status ])
+      })
+
+      // Add some data
+      worksheet.addTable({
+        name: 'TableMember',
+        ref: 'A1',
+        headerRow: true,
+        style: {
+          theme: 'TableStyleMedium2',
+          showRowStripes: true,
+        },
+        columns: [
+          { name: 'No.' },
+          { name: 'Member Name' },
+          { name: 'Status Perpustakaan', filterButton: true },
+        ],
+        rows,
+      });
+
+      worksheet.columns.forEach((column) => {
+        column.width = column.values.reduce((maxWidth, value) => {
+          return Math.max(maxWidth, value.toString().length);
+        }, 0) * 1.2; // Add some padding
+      });
+
+      // Generate the Excel file
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      // Save the file
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      saveAs(blob, 'example.xlsx');
+    },
     searchData() {
       this.$refs.tblPagingMember.refresh("");
     },
