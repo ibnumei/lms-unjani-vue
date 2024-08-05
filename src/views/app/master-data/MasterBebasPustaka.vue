@@ -74,6 +74,7 @@
       :disabledButton="disabledButton"
       :renderButton="renderButton"
       :showCustomPerPage="true"
+      :showProcessBebasPustaka="true"
     ></e-paging-server>
     <e-bebas-pustaka v-show="false" :memberInfo="memberInfo"/>
   </div>
@@ -154,7 +155,18 @@ export default {
 
       // Save the file
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(blob, 'example.xlsx');
+
+      const currentDate = new Date();
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const hours = currentDate.getHours().toString().padStart(2, '0');
+      const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+      const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+      const documentName = `List Bebas Pustaka-${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+
+      saveAs(blob, documentName);
     },
     searchData() {
       this.$refs.tblPagingMember.refresh("");

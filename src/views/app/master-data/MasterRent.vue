@@ -74,9 +74,19 @@
               variant="success default"
               size="sm"
               id="uiBtnMasterBookCari"
-              class="mt-2 btn-shadow"
+              class="mt-2 btn-shadow mr-2"
             >
               <em class="simple-icon-magnifier"/>Cari
+            </b-button>
+
+            <b-button
+              @click="downloadExcel"
+              variant="success default"
+              size="sm"
+              id="uiBtnBebasPustakaCari"
+              class="mt-2 btn-shadow"
+            >
+              <em class="simple-icon-magnifier" />Export Data
             </b-button>
           </div>
         </b-card>
@@ -90,12 +100,16 @@
       search=""
       sortDesc
       :filters="filters"
+      :showCustomPerPage="true"
     ></e-paging-server>
   </div>
 </template>
 <script>
 import pagingServer from '@/components/Customs/PagingServer'
 import Datepicker from "vuejs-datepicker";
+import _ from 'lodash'
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export default {
   components: {
@@ -137,6 +151,71 @@ export default {
       this.filters[6].value = ''
       this.filters[7].value = ''
       this.$refs.tblPagingBook.refresh('')
+    },
+    async downloadExcel() {
+      console.log(this.$refs.tblPagingBook.items_)
+      const refItems = _.get(this.$refs, 'tblPagingBook.items_', [])
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet 1');
+
+      const rows = [];
+      refItems.forEach((item, index) => {
+        rows.push([ 
+          index + 1, 
+          item.kode_pinjam, 
+          item.member_name, 
+          item.title,
+          item.inventory_code,
+          item.tgl_pinjam_format,
+          item.tgl_kembali_format,
+          item.status_pinjam_format])
+      })
+
+      // Add some data
+      worksheet.addTable({
+        name: 'TableMember',
+        ref: 'A1',
+        headerRow: true,
+        style: {
+          theme: 'TableStyleMedium2',
+          showRowStripes: true,
+        },
+        columns: [
+          { name: 'No.' },
+          { name: 'Kode Pinjam' , filterButton: true},
+          { name: 'Member Name', filterButton: true },
+          { name: 'Judul Buku', filterButton: true },
+          { name: 'Inventory Code', filterButton: true },
+          { name: 'Tanggal Pinjam', filterButton: true },
+          { name: 'Tanggal Kembali', filterButton: true },
+          { name: 'Status Pinjam', filterButton: true },
+        ],
+        rows,
+      });
+
+      worksheet.columns.forEach((column) => {
+        column.width = column.values.reduce((maxWidth, value) => {
+          return Math.max(maxWidth, value.toString().length);
+        }, 0) * 1.2; // Add some padding
+      });
+
+      // Generate the Excel file
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      // Save the file
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      const currentDate = new Date();
+      const day = currentDate.getDate().toString().padStart(2, '0');
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = currentDate.getFullYear();
+      const hours = currentDate.getHours().toString().padStart(2, '0');
+      const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+      const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+      const documentName = `Daftar Transasksi-${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+
+      saveAs(blob, documentName);
     },
   }
 }

@@ -4,11 +4,11 @@
       <b-colxx xxs="12">
         <b-card class="mb-4">
           <e-title v-if="title" id="main-title" :label="title" :refreshData="refreshData" :icon="titleIcon" style="padding: 0;"></e-title>
-          <b-row v-if="showCustomPerPage">
-            <b-colxx sm="2">
+          <b-row>
+            <b-colxx sm="2" v-if="showCustomPerPage">
               <b-form-select id="select=per-page" v-model="perPage_" :options="optionsPerPage" @change="setPerPage"></b-form-select>
             </b-colxx>
-            <b-colxx sm="2">
+            <b-colxx sm="2" v-if="showProcessBebasPustaka">
               <b-button id="processAllData" variant="outline-primary" class="default" @click="processAllData()">Process Semua</b-button>
             </b-colxx>
           </b-row>
@@ -517,7 +517,8 @@ props: {
   showCheckbox: { type: Boolean, default: false },
   selectedFlag: { type: String, required: false },
   showPopupWarning: { type: Boolean, default: true },
-  showCustomPerPage: {type: Boolean,  required: false, default: false}
+  showCustomPerPage: {type: Boolean,  required: false, default: false},
+  showProcessBebasPustaka: {type: Boolean,  required: false, default: false}
 },
 watch: {
   filters (n) {
