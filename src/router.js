@@ -132,6 +132,10 @@ const routes = [
               /* webpackChunkName: "dashboards" */
               "./views/app/settings/Scheduler"
             )
+          },
+          {
+            path: "banner",
+            component: () => import("./views/app/settings/Banner")
           }
         ]
       },

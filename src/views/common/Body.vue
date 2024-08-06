@@ -108,6 +108,9 @@
 </template>
 
 <script>
+import _ from 'lodash'
+import axios from "axios";
+import { apiBackend } from "@/constants/config";
 import { headroom } from "vue-headroom";
 import HomeLayout from "../../layouts/HomeLayout";
 import GlideComponent from "../../components/Carousel/GlideComponent";
@@ -142,7 +145,27 @@ export default {
     },
     pageMahasiswa () {
       this.$router.push({ name: 'mahasiswa' })
+    },
+    async getHeaderImage() {
+      try {
+        const response = await axios.get(`${apiBackend}/banner`);
+        const data = _.get(response, 'data.data', []);
+        data.forEach((element) => {
+          element.imgSrc = this.getImageUrl(element)
+          console.log(element.imgSrc)
+        });
+        this.bannerImages = data;
+      } catch (error) {
+        console.error('Failed to fetch images', error);
+      }
+    },
+    getImageUrl(image) {
+      const blob = new Blob([new Uint8Array(image.file.data)], { type: image.file_type });
+      return URL.createObjectURL(blob);
     }
+  },
+  mounted() {
+    this.getHeaderImage();
   },
   computed: {
     ...mapGetters(['currentUser']),
@@ -173,7 +196,7 @@ export default {
           },
         },
       },
-      bannerContent: [
+      defaultBannerContent: [
         {
           imgSrc: "/assets/img/landing-page/slideshow/1.jpg",
         },
@@ -187,7 +210,33 @@ export default {
           imgSrc: "/assets/img/landing-page/slideshow/4.jpg",
         },
       ],
+      bannerImages: [],
     };
+  },
+  computed: {
+    currentPage () {
+      if (this.$route.path.toLowerCase().includes('pengembalian')) {
+        return 'pengembalian'
+      } else if (this.$route.path.toLowerCase().includes('peminjaman')) {
+        return 'peminjaman'
+      } else {
+        return 'home'
+      }
+    },
+    bannerContent() {
+      console.log(this.currentPage)
+      const mappingImages = {
+        home: this.bannerImages.filter((obj) => obj.category === 'banner_home'),
+        peminjaman: this.bannerImages.filter((obj) => obj.category === 'banner_peminjaman'),
+        pengembalian: this.bannerImages.filter((obj) => obj.category === 'banner_pengembalian')
+      }
+      const banner = mappingImages[this.currentPage]
+      if (!banner || banner.length == 0) {
+        return this.defaultBannerContent
+      }
+      
+      return banner
+    }
   },
 };
 </script>
