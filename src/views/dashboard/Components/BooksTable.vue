@@ -1,5 +1,6 @@
 <template>
   <div>
+    <e-loading ref="loading" />
     <e-scanner ref="modalScanner" @on-scan="handleQrScan" v-model="qrCodeContent" />
     <b-card>
       <h3>Daftar buku</h3>
@@ -56,6 +57,7 @@
 <script>
 import _ from "lodash";
 import ModalScanner from './ModalScanner.vue'
+import Loading from "@/components/Customs/Loading";
 import { apiDrawer } from "@/constants/config";
 import axios from "axios";
 
@@ -88,7 +90,8 @@ const REGEX_TITLE = /title: "([^"]+)"/;
 
 export default {
   components: {
-    'e-scanner': ModalScanner
+    'e-scanner': ModalScanner,
+    "e-loading": Loading,
   },
   props: {
     showAction: { default: '' },
@@ -147,8 +150,7 @@ export default {
     },
     async handleQrScan(itemCode) {
       try {
-        // const itemCode = payload.match(REGEX_ITEM_CODE)[1];
-        // const title = payload.match(REGEX_TITLE)[1];
+        this.$refs.loading.show()
 
         const itemMatch = this.value[this.qrVerifyIndex].item_code === itemCode
         // const titleMatch = this.value[this.qrVerifyIndex].title === title
@@ -160,7 +162,20 @@ export default {
           this.value[this.qrVerifyIndex].verified = true
           
           //HIT Api Drawer with null payload when succesfully verification book 
-          await axios.post(`${apiDrawer}`, {})
+          try {
+            await axios.post(`${apiDrawer}`, {})
+          } catch (error) {
+            console.log('Failed to open API Drawer... ', error)
+            this.$notify(
+              'error',
+              'Peringatan!',
+              'Terjadi Kesalahan Pada Drawer...',
+              {
+                duration: 3000,
+                permanent: false
+              }
+            );
+          }
 
           this.$notify(
             'success',
@@ -195,6 +210,7 @@ export default {
           }
         );
       } finally {
+        this.$refs.loading.hide()
         this.$refs.modalScanner.stopQrScanner()
         return this.$refs.modalScanner.closeScanner()
       }
