@@ -99,7 +99,7 @@
       <div class="container copyright pt-3 pb-3">
         <div class="row">
           <div class="col-12 text-center">
-            <p class="mb-0">© Copyright 2023 - UNJANI - All Rights Reserved</p>
+            <p class="mb-0">© Copyright 2024 - UNJANI - All Rights Reserved</p>
           </div>
         </div>
       </div>
@@ -175,6 +175,30 @@ export default {
       }
       return null
     },
+    
+    currentPage () {
+      if (this.$route.path.toLowerCase().includes('pengembalian')) {
+        return 'pengembalian'
+      } else if (this.$route.path.toLowerCase().includes('peminjaman')) {
+        return 'peminjaman'
+      } else {
+        return 'home'
+      }
+    },
+    bannerContent() {
+      console.log(this.currentPage)
+      const mappingImages = {
+        home: this.bannerImages.filter((obj) => obj.category === 'banner_home'),
+        peminjaman: this.bannerImages.filter((obj) => obj.category === 'banner_peminjaman'),
+        pengembalian: this.bannerImages.filter((obj) => obj.category === 'banner_pengembalian')
+      }
+      const banner = mappingImages[this.currentPage]
+      if (!banner || banner.length == 0) {
+        return this.defaultBannerContent
+      }
+      
+      return banner
+    }
   },
   data() {
     return {
@@ -212,32 +236,7 @@ export default {
       ],
       bannerImages: [],
     };
-  },
-  computed: {
-    currentPage () {
-      if (this.$route.path.toLowerCase().includes('pengembalian')) {
-        return 'pengembalian'
-      } else if (this.$route.path.toLowerCase().includes('peminjaman')) {
-        return 'peminjaman'
-      } else {
-        return 'home'
-      }
-    },
-    bannerContent() {
-      console.log(this.currentPage)
-      const mappingImages = {
-        home: this.bannerImages.filter((obj) => obj.category === 'banner_home'),
-        peminjaman: this.bannerImages.filter((obj) => obj.category === 'banner_peminjaman'),
-        pengembalian: this.bannerImages.filter((obj) => obj.category === 'banner_pengembalian')
-      }
-      const banner = mappingImages[this.currentPage]
-      if (!banner || banner.length == 0) {
-        return this.defaultBannerContent
-      }
-      
-      return banner
-    }
-  },
+  }
 };
 </script>
 <style lang="scss" scoped>

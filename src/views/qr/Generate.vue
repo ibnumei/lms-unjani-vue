@@ -70,6 +70,14 @@
         </div>
       </div>
     </b-card>
+    <b-modal id="modalbasic" ref="modalbasic">
+      <h2>Silahkan Klik Tombol Logout Untuk Keluar</h2>
+      <h4>Akun anda akan keluar otomatis dalam 5 menit</h4>
+      <template slot="modal-footer">
+        <b-button variant="secondary" @click="hideModal">Close</b-button>
+        <b-button variant="danger" @click="logoutMahasiswa" class="mr-1">Logout</b-button>
+      </template>
+    </b-modal>
   </b-body>
 </template>
 
@@ -102,6 +110,12 @@ export default {
   },
   methods: {
     ...mapMutations(['setUser']),
+    logoutMahasiswa () {
+      this.$router.push({ name: 'member-logout' })
+    },
+    hideModal() {
+      this.$refs.modalbasic.hide()
+    },
     async printContent() {
       try {
         // Connect to QZ Tray
@@ -176,6 +190,7 @@ export default {
 
         // Disconnect from QZ Tray
         await qz.websocket.disconnect();
+        this.$refs.modalbasic.show()
       } catch (error) {
         console.error('Error checking printer connection:', error);
         this.printerStatus = 'Error checking printer connection.';
