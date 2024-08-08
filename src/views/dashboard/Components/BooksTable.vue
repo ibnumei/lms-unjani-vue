@@ -142,6 +142,22 @@ export default {
       })
     },
     submit () {
+      const items = this.value || [];
+      let allVerified = items.length > 0;
+      items.forEach((item) => {
+        allVerified = allVerified && item.verified
+      })
+      if(!allVerified) {
+        return this.$notify(
+            'error',
+            'Peringatan!',
+            'Harap Verifikasi Buku yang akan dikembalikan',
+            {
+              duration: 3000,
+              permanent: false
+            }
+          );
+      }
       this.$emit('submit-data')
     },
     openScanner (index) {

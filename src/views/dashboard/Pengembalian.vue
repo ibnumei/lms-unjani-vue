@@ -158,6 +158,7 @@ export default {
         data.forEach((element) => {
           element.item_code = _.get(element, 'items[0].item_code')
           element.inventory_code = _.get(element, 'items[0].inventory_code')
+          element.verified = false
         });
         this.items = data
       } catch (error) {
