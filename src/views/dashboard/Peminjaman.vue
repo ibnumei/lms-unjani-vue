@@ -215,6 +215,7 @@ export default {
         const data = _.get(response, 'data.data')
         data.item_code = _.get(data, 'items[0].item_code')
         data.inventory_code = _.get(data, 'items[0].inventory_code')
+        data.verified = true
         this.items.push(data)
       } catch (error) {
         this.commonErrorNotif()
