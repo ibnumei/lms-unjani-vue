@@ -177,21 +177,21 @@ export default {
           }
           this.value[this.qrVerifyIndex].verified = true
           
-          //HIT Api Drawer with null payload when succesfully verification book 
-          // try {
-          //   await axios.post(`${apiDrawer}`, {})
-          // } catch (error) {
-          //   console.log('Failed to open API Drawer... ', error)
-          //   this.$notify(
-          //     'error',
-          //     'Peringatan!',
-          //     'Terjadi Kesalahan Pada Drawer...',
-          //     {
-          //       duration: 3000,
-          //       permanent: false
-          //     }
-          //   );
-          // }
+          // HIT Api Drawer with null payload when succesfully verification book 
+          try {
+            await axios.post(`${apiDrawer}`, {})
+          } catch (error) {
+            console.log('Failed to open API Drawer... ', error)
+            this.$notify(
+              'error',
+              'Peringatan!',
+              'Terjadi Kesalahan Pada Drawer...',
+              {
+                duration: 3000,
+                permanent: false
+              }
+            );
+          }
 
           this.$notify(
             'success',
